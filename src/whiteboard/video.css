@@ -1,0 +1,27 @@
+.video-box{
+    width: 23%;
+    height: 34%;
+    position: fixed;
+    display: block; 
+    
+    right: 0%;
+    /* margin-top: -175px; */
+    border-radius: 4px;
+    background-color: white;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    box-shadow: 0 8px 24px 0 rgb(0 0 0 / 10%);
+
+}
+
+.video {
+    width: 100%;
+    height: fit-content;
+}
+
+.video2 {
+    width: 100%;
+    height: fit-content;
+}

@@ -1,0 +1,24 @@
+.header-tab{
+    width: 100%;
+    height: 40px;
+    display: flex;
+    position: relative;
+    
+    box-shadow: 0 8px 24px 0 rgb(0 0 0 / 10%);
+}
+
+
+.right {
+    width: 50px;
+    height: 100%;
+    display: flex;
+    position: absolute;
+    right: 0;
+    
+}
+
+.exitbtn {
+    width: 35px;
+    right: 0;
+
+}

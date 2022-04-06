@@ -1,0 +1,47 @@
+.messageBox2 {
+    background: #DCDCDC;
+    border-radius: 3px;
+    padding: 5px 20px;
+    color: white;
+    justify-content:center;
+    align-items: center;
+    display: inline-block;
+    width: 100%;
+  }
+  
+  .messageText2 {
+    width: 100%;
+    left: 0;
+    right: 0;
+    letter-spacing: 0;
+    font-size: 0.8em;
+    word-wrap: break-word;
+  }
+  
+  
+  .messageContainer2 {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 5%;
+    margin-top: 3px;
+  }
+  
+  
+  
+  
+  
+  .justifyEnd2 {
+    justify-content: flex-end;
+  }
+  
+  .colorWhite2 {
+    color: black;
+  }
+  
+  
+  
+  .backgroundBlue2 {
+    background: #1ecbe1;
+  }
+  
+  

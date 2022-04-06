@@ -1,0 +1,21 @@
+
+.pag {
+    width:210px;
+    position: fixed;
+    display: flex;
+    bottom: 1%;
+    right: 23.5%;
+    margin-top: -175px;
+    border-radius: 4px;
+    background-color: white;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    box-shadow: 0 8px 24px 0 rgb(0 0 0 / 10%);
+
+}
+
+.addpage{
+    cursor: pointer;
+}
+
+

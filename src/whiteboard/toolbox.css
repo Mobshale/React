@@ -1,0 +1,80 @@
+
+.tool-mid-box-left {
+    width: 40px;
+    position: fixed;
+    display: flex;
+    top: 50%;
+    left: 1%;
+    margin-top: -175px;
+    border-radius: 4px;
+    background-color: white;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    box-shadow: 0 8px 24px 0 rgb(0 0 0 / 10%);
+
+}
+
+.tool-box-cell-box-left {
+  width: 35px;
+  height: 35px;
+  user-select: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2px;
+}
+  
+.tool-mid-box-left :hover{
+  background-color: #E8E9E9;
+}
+
+  .tool-box-cell {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .tool-box-cell-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.24);
+  }
+  
+  .tool-box-cell-subscript {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+  
+
+  .draw-tool-box {
+    display: flex;
+    width: 100px;
+    padding: -5px;
+    flex-wrap: wrap;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.draw-tool-box-cell :hover{
+  background-color: #E8E9E9;
+}
+
+
+.draw-tool-box-cell {
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
