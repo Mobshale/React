@@ -116,7 +116,28 @@ class Teacher extends React.Component {
   }
 
   componentDidMount() {
-    this.joinSession();
+         const failure = (e) => {
+      console.log('getUserMedia Error: ', e)
+    }
+  
+
+    const success = (stream) => {
+        this.joinSession();
+    };
+   
+    const constraints = {
+      audio: true,
+      video: true,
+      options: {
+        mirror: true,
+      }
+    }
+  
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then(success)
+      .catch(failure)
+
+    
 
     if(reren===0){
         setTimeout(() => {

@@ -87,6 +87,34 @@
 }
 
 
+.logo2{
+    width: 165px;
+    height: 35px;
+    top: 7%;
+    position: absolute;
+
+}
 
 
+.bb{
+    display: flex;
+    justify-content: center;
+}
+
+
+
+.download{
+    margin: auto;
+  width: 100%; 
+  top: 35%;
+  padding: 40px;
+    position: absolute;
+
+}
+
+
+.bb2{
+    display: flex;
+    justify-content: center;
+}
 

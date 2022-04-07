@@ -163,7 +163,6 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
       // checking if the user is teacher or student teacher =1 , student =0
       if(type == "0"){
         onValue(ref(db, '/pages'+'/'+roomName), (snapshot) => {
-            console.log("pragna"+currentPage);
             var pstry;
             pstry = snapshot.val();
             if(pstry!= null){

@@ -3,6 +3,7 @@ import './main.css'
 import tech from '../svg/tech.svg'
 import know from '../svg/know.svg'
 import logo from '../svg/logo.png'
+import download from './download.png'
 import QRCode from 'qrcode'
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -11,12 +12,13 @@ import { getDatabase, ref, set,onValue,push, remove, get, child } from "firebase
 import { Redirect } from "react-router-dom";
 
 
+
 var qrcode;
 var fcode;
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
+var isMobile = false;
 
 class Main extends React.Component {
  
@@ -26,12 +28,19 @@ class Main extends React.Component {
 
     this.state = { redirect: null };
 
+    isMobile = (window.innerWidth <= 760);
+    
+
+
+
    
   }
 
 
   componentDidMount(){
-    var canvas = document.getElementById('canvas')
+
+    if(!isMobile){
+      var canvas = document.getElementById('canvas')
     var ctx = canvas.getContext("2d");
     ctx.fillStyle = "#FFFFF";
     ctx.fillRect(0, 0, 500, 500);
@@ -72,6 +81,8 @@ class Main extends React.Component {
         }
     });
 
+    }
+    
     
   }
   
@@ -89,11 +100,27 @@ class Main extends React.Component {
   return (
    <div class="body" >
 
+    {isMobile 
+    
+    ?<div class="bb"> 
+      <img class="logo2" src={logo}>
+       </img>
+
+       
+       <div class="bb2"> 
+      <img class="download" src={download}>
+       </img>
+
+       
 
 
+    </div> 
+
+
+    </div> 
     
-    
-    <img class="logo" src={logo}>
+    :<div>
+ <img class="logo" src={logo}>
        </img>
  
       
@@ -134,7 +161,16 @@ class Main extends React.Component {
        <img class='know' src={know}></img>
        
       
-   </div>
+
+    </div>
+    }
+
+</div>
+
+
+    
+    
+   
 
   );
   }
