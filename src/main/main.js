@@ -108,7 +108,7 @@ class Main extends React.Component {
 
        
        <div class="bb2"> 
-      <img class="download" src={download}>
+      <img class="download"  href="https://play.google.com/store/apps/details?id=com.mobshale.app" src={download}>
        </img>
 
        

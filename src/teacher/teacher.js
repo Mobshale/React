@@ -122,7 +122,7 @@ class Teacher extends React.Component {
   
 
     const success = (stream) => {
-        this.joinSession();
+        
     };
    
     const constraints = {
@@ -137,6 +137,7 @@ class Teacher extends React.Component {
       .then(success)
       .catch(failure)
 
+    this.joinSession();
     
 
     if(reren===0){
