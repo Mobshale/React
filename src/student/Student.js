@@ -15,6 +15,7 @@ import { css } from "@emotion/react";
 var roomN
 var userN
 var reren =0;
+var sub;
 
 
 
@@ -33,7 +34,7 @@ class Student extends React.Component {
 
     this.state = {
       mySessionId: roomN,
-      myUserName: 'Participant' + Math.floor(Math.random() * 100),
+      myUserName: 'Participan' + Math.floor(Math.random() * 100),
       session: undefined,
       mainStreamManager: undefined,
       publisher: undefined,
@@ -42,6 +43,12 @@ class Student extends React.Component {
 
   };
 
+
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+    var video = document.getElementById('video2');   
+    video.play(); // play your media here then stop the stream when done below...
+    stream.getTracks().forEach(function (track) { track.stop(); });
+    });
 
 
   this.joinSession = this.joinSession.bind(this);
@@ -65,17 +72,25 @@ class Student extends React.Component {
 
 
   componentDidMount() {
-    this.joinSession();
+    
 
     if(reren===0){
         setTimeout(() => {
         var x = document.getElementById('preload');
         x.style.display = "none";
+
+        this.joinSession();
         this.setState({
           preloader : false 
         })
       }, 5000)
     }
+
+
+    
+
+
+  
 
 
   }
@@ -143,19 +158,54 @@ joinSession() {
               // so OpenVidu doesn't create an HTML video by its own
               console.log("brooo")
               console.log(event.stream);
+              var video = document.getElementById('video2');   
+
               var subscriber = mySession.subscribe(event.stream, undefined);
               var subscribers = this.state.subscribers;
-              var video = document.getElementById('video2');
-              subscriber.addVideoElement(video);
+
+
+                
+              console.log(subscriber.addVideoElement(video));
               
-              subscribers.push(subscriber);
 
-              console.log("hell baby")
 
+            
+                setTimeout(() => {
+                    console.log("helllll")
+                    // console.log(stream.getMediaStream())
+                    // video.srcObject = stream.getMediaStream();
+                    // console.log(video.srcObject);
+                    
+
+
+
+
+                   
+
+                    // console.log(stream.mediaStream);
+                 }
+                 , 4000)
+            
+              
+
+
+                //  video.srcObject = 
+                
+            //   subscribers.push(subscriber);
+
+              
+
+
+
+            //   console.log("hell baby")
+
+            //   console.log(video);
+
+            
               // Update the state with the new subscribers
               this.setState({
-                  subscribers: subscribers,
-              });
+                subscribers: subscribers,
+            });
           });
 
           // On every Stream destroyed...
@@ -267,13 +317,7 @@ leaveSession() {
           <PropagateLoader class="loader" color={"#010529"} loading={preloader}  css={override} size={20} />
         </div>
         <Header></Header>
-        {/* <div id="video-box" class="video-box"> */}
-       {/* <video autoPlay={true} id='video2'  class="video2"/> */}
-
-        {/* <video 
-         class="video2"  id='video2'>
-        </video>  */}
-      {/* </div> */}
+      
         <Video childToParent={(v) =>this.childToParent(v)} ></Video>
         <Chat  userName={userN}  roomName={roomN}></Chat>
         <Canvaboard message="none" roomName={roomN} type="0"> </Canvaboard>

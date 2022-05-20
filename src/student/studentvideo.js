@@ -59,7 +59,7 @@ class Video extends React.Component {
        {/* <video autoPlay={true} id='video2'  class="video2"/> */}
 
         <video 
-         class="video2"      id='video2'>
+         class="video2"  autoPlay={true}  playsInline  id='video2'>
         </video> 
      
    </div>
