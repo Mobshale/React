@@ -39,6 +39,7 @@ class Uploadppt extends React.Component {
       uploading: true,
     });
 
+    console.log("uploading")
 
     axios.post(uploadURI,formData)
     .then(response =>{
@@ -55,6 +56,9 @@ class Uploadppt extends React.Component {
                 set(postListRef, ppts );
                 onDisconnect(postListRef).remove();
       }
+
+    }).catch(error => {
+      console.log(error);
     }) 
   };
 
