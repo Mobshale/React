@@ -41,13 +41,8 @@ class Pag extends React.Component {
       switch (event.keyCode) {
          case 37:
             console.log("Left key is pressed.");
-            if(this.state.cpage!=1){
-              con.setMessage(this.state.cpage-1);
-              this.setState({
-                cpage:this.state.cpage-1
-              })
-              
-            }
+              var hangoutButton = document.getElementById("leftbtn");
+              hangoutButton.click(); // this will trigger the click event
             
             break;
          case 38:
@@ -56,20 +51,10 @@ class Pag extends React.Component {
          case 39:
             console.log("Right key is pressed.");
             // console.log(pagg.onChange(current+1,pagg.pageSize))
-            if(this.state.cpage==this.state.total){
-              con.setMessage(this.state.cpage+1);
-              this.setState({
-                cpage:this.state.cpage+1,
-                total: this.state.total+1
-              })
+            var hangoutButton = document.getElementById("rightbtn");
+            hangoutButton.click();
               
-            }else{
-              con.setMessage(this.state.cpage+1);
-              this.setState({
-                cpage:this.state.cpage+1
-              })
-              
-            }
+            
 
             break;
          case 40:
@@ -134,15 +119,11 @@ class Pag extends React.Component {
     <MContext.Consumer>
         {(context) => (
           
+
+          
           <div class="pag">
           
-          {/* <Tooltip placement="top" title={<span>Add Page</span>}>
-                <PlusSquareTwoTone class="addpage"  twoToneColor="#eb2f96" style={{cursor:"pointer" , marginLeft:"5px", fontSize:'25px'}} onClick={this.imageClick.bind(this,"new",context)}  />
-                </Tooltip> */}
-              
-            
-                {/* <Pagination className='pagg' class="pagg" simple   onChange={ val => this.onChange(val,context)} total={page} /> */}
-                
+         
               
                 <Tooltip placement="top" title={<span>Previous</span>}>
                 <img id="leftbtn" width={20} height={20} src={bac}  onClick={()  => this.left(context)} alt="selector"></img></Tooltip>
