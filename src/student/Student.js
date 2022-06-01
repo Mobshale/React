@@ -166,29 +166,6 @@ joinSession() {
 
                 
               console.log(subscriber.addVideoElement(video));
-              
-
-
-            
-                setTimeout(() => {
-                    console.log("helllll")
-                    // console.log(stream.getMediaStream())
-                    // video.srcObject = stream.getMediaStream();
-                    // console.log(video.srcObject);
-                    
-
-
-
-
-                   
-
-                    // console.log(stream.mediaStream);
-                 }
-                 , 4000)
-            
-              
-
-
                 //  video.srcObject = 
                 
             //   subscribers.push(subscriber);

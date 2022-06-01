@@ -198,6 +198,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
             
             if(currentPage!= data.c){
                 currentPage = data.c;
+                drawimage();
                 pageChangeOn(currentPage);
         
             }
@@ -221,6 +222,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                     _context.clearRect(0, 0, _canvas.width, _canvas.height);
                     _context.fillStyle = "#F3F6F9";
                     _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
+                    drawimage();
                     break;
             }
             prev = data;
@@ -272,6 +274,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
         // const newPostRef = push(postListRef);
         remove(postListRef)
         // set(newPostRef, pages[previousPage-1]);
+        drawimage();
         pathsry = [];
     }
     
@@ -296,6 +299,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
        console.log(pages);
         if(previousPage<val){
             if(pages.length<val){
+                
                 console.log("new page")
                 _context.clearRect(0, 0, _canvas.width, _canvas.height);
                 _context.fillStyle = "#F3F6F9";
@@ -347,21 +351,25 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
     // redrawing the previous page
     function Redraw(val) {
         console.log("page ",val);
-        pathsry = pages[val];
+        if(pages!= null){
+            pathsry = pages[val];
         console.log(pathsry);
+        }
+        
         if (typeof pathsry == 'undefined'){
             console.log("new page")
             _context.clearRect(0, 0, _canvas.width, _canvas.height);
             _context.fillStyle = "#F3F6F9";
             _context.fillRect(0, 0, _canvas.width, _canvas.height);
             pathsry = [];
+            drawimage();
             return;
         }
         var maxLineWidht = 0;//Math.max.apply(null, _brushSizes);
         for(var key in _brushSizes) {
             maxLineWidht = Math.max(maxLineWidht, _brushSizes[key]);
         }
-        
+        drawimage();
         pathsry.forEach(path=>{
             var k = path[0].z;
             switch(k){
@@ -447,26 +455,29 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                     break;
                 case "straight":
                     _context.lineWidth = path[0].lw;
-                    var mousePos = {x:path[1].x,y:path[1].y}
-                    var dragingstrtLoc = {x:path[0].x,y:path[0].y}
+                    var mousePos = {x:path[1].x,y:path[1].y,w:path[1].w,h:path[1].h}
+                    var dragingstrtLoc = {x:path[0].x,y:path[0].y,w:path[0].w,h:path[0].h}
                     drawLine(mousePos,dragingstrtLoc);
                     break;
                 case "elipse":
                     _context.lineWidth = path[0].lw;
-                    var mousePos = {x:path[1].x,y:path[1].y}
-                    var dragingstrtLoc = {x:path[0].x,y:path[0].y}
+                    var mousePos = {x:path[1].x,y:path[1].y,w:path[1].w,h:path[1].h}
+                    var dragingstrtLoc = {x:path[0].x,y:path[0].y,w:path[0].w,h:path[0].h}
                     drawCircle(mousePos,dragingstrtLoc);
                     break;
                 case "rec":
                     _context.lineWidth = path[0].lw;
-                    var mousePos = {x:path[1].x,y:path[1].y}
-                    var dragingstrtLoc = {x:path[0].x,y:path[0].y}
+                    var mousePos = {x:path[1].x,y:path[1].y,w:path[1].w,h:path[1].h}
+                    var dragingstrtLoc = {x:path[0].x,y:path[0].y,w:path[0].w,h:path[0].h}
                     drawRec(mousePos,dragingstrtLoc);
                     break;
 
             }
         })
-        drawimage();
+
+        
+
+        
     }
 
 
@@ -638,15 +649,15 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                 }
                 break;
             case "straight":
-                dragingstrtLoc ={ x:mouseX,y:mouseY}
+                dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
                 takeSnapShotCanvas();
                 break;
             case "elipse":
-                dragingstrtLoc ={ x:mouseX,y:mouseY}
+                dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
                 takeSnapShotCanvas();
                 break;
             case "rec":
-                dragingstrtLoc ={ x:mouseX,y:mouseY}
+                dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
                 takeSnapShotCanvas();
                 break;
 
@@ -690,17 +701,17 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                 break;
             case 'straight':
                 resotreSnapShotCanvas();
-                 position = { x:mouseX,y:mouseY}
+                 position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth}
                 drawLine(position,dragingstrtLoc);
                 break;
             case "elipse":
                 resotreSnapShotCanvas();
-                position = { x:mouseX,y:mouseY}
+                position = { x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth}
                 drawCircle(position,dragingstrtLoc);
                 break;
             case "rec":
                 resotreSnapShotCanvas();
-                position = { x:mouseX,y:mouseY}
+                position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth}
                 drawRec(position,dragingstrtLoc);
                 break;
         }
@@ -709,8 +720,10 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
 
 
     function drawRec(mousePos,drag){
+        var w = _canvas.clientWidth;
+        var h = _canvas.clientHeight;
         _context.beginPath();
-        _context.rect((drag.x),(drag.y),(mousePos.x)-(drag.x),(mousePos.y)-(drag.y));
+        _context.rect((drag.x*w)/drag.w,(drag.y*h)/drag.h,(mousePos.x*w)/mousePos.w-(drag.x*w)/drag.w,(mousePos.y*h)/mousePos.h-(drag.y*h)/drag.h);
         _context.stroke();
       }
     
@@ -958,10 +971,12 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
 
         
 function drawCircle(mousePos,drag){
-    var x1 = drag.x;
-    var y1 = drag.y;
-    var x2 = mousePos.x;
-    var y2 = mousePos.y;
+    var w = _canvas.clientWidth;
+    var h = _canvas.clientHeight;
+    var x1 = (drag.x*w)/drag.w;
+    var y1 = (drag.y*h)/drag.h;
+    var x2 = (mousePos.x*w)/mousePos.w;
+    var y2 = (mousePos.y*h)/mousePos.h;
     var radiusX = (x2 - x1) * 0.5,   /// radius for x based on input
     radiusY = (y2 - y1) * 0.5,   /// radius for y based on input
     centerX = x1 + radiusX,      /// calc center
@@ -991,9 +1006,11 @@ function drawCircle(mousePos,drag){
 
 
   function drawLine(mousePos,dragingstrtLoc){
+    var w = _canvas.clientWidth;
+    var h = _canvas.clientHeight;
     _context.beginPath();
-    _context.moveTo(dragingstrtLoc.x,dragingstrtLoc.y)
-    _context.lineTo((mousePos.x),(mousePos.y))
+    _context.moveTo((dragingstrtLoc.x*w)/dragingstrtLoc.w,(dragingstrtLoc.y*h)/dragingstrtLoc.h)
+    _context.lineTo((mousePos.x*w)/mousePos.w,(mousePos.y*h)/mousePos.h)
     _context.stroke();
   }
 
@@ -1181,6 +1198,7 @@ function drawCircle(mousePos,drag){
             _context.fillStyle = "#F3F6F9";
             _context.fillRect(0, 0, _canvas.width, _canvas.height);
             pathsry = [];
+            drawimage();
         }else{
             console.log(pages.length+ "   hello" +val );
             if(pages.length<val){
@@ -1189,6 +1207,7 @@ function drawCircle(mousePos,drag){
                 _context.fillStyle = "#F3F6F9";
                 _context.fillRect(0, 0, _canvas.width, _canvas.height);
                 pathsry = [];
+                drawimage();
             }else{
                 console.log("after page")
                 _context.clearRect(0, 0, _canvas.width, _canvas.height);

@@ -1,6 +1,6 @@
 
 .pag {
-    width:210px;
+    width:130px;
     position: fixed;
     display: flex;
     bottom: 1%;
@@ -14,8 +14,5 @@
 
 }
 
-.addpage{
-    cursor: pointer;
-}
 
 
