@@ -11,7 +11,7 @@ import { getDatabase, ref, push, set ,onDisconnect } from "firebase/database";
 
 
 
-var uploadURI = 'http://ec2-52-91-193-163.compute-1.amazonaws.com:8080/uploadppt';
+var uploadURI = 'http://52.91.193.163:8080/uploadppt';
 var roomName;
 
 class Uploadppt extends React.Component {
