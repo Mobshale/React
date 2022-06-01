@@ -11,7 +11,7 @@ import { getDatabase, ref, push, set ,onDisconnect } from "firebase/database";
 
 
 
-var uploadURI = 'http://52.91.193.163:8080/uploadppt';
+var uploadURI = 'http://ec2-52-91-193-163.compute-1.amazonaws.com:8080/uploadppt';
 var roomName;
 
 class Uploadppt extends React.Component {
@@ -39,7 +39,6 @@ class Uploadppt extends React.Component {
       uploading: true,
     });
 
-    console.log("uploading")
 
     axios.post(uploadURI,formData)
     .then(response =>{
@@ -56,10 +55,8 @@ class Uploadppt extends React.Component {
                 set(postListRef, ppts );
                 onDisconnect(postListRef).remove();
       }
-
-    }).catch(error => {
-      console.log(error);
-    }) 
+    }).catch(error =>
+      console.log(error)) 
   };
 
   render() {
