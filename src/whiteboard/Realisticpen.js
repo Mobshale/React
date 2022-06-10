@@ -482,8 +482,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
 
 
     function lop(i) {
-
-
+        console.log(i);
         imagesbase[i] = new Image;
         imagesbase[i].src = pptlist[i];
         imagesbase[i].setAttribute('crossOrigin', '');
@@ -660,6 +659,10 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                 dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
                 takeSnapShotCanvas();
                 break;
+            case "triangle":
+                dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
+                takeSnapShotCanvas();
+                break;
 
 
         }
@@ -714,6 +717,12 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                 position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth}
                 drawRec(position,dragingstrtLoc);
                 break;
+            case "triangle":
+                resotreSnapShotCanvas();
+                position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth}
+                drawTriangle(position,dragingstrtLoc);
+                break;
+
         }
        
     }
@@ -1012,6 +1021,23 @@ function drawCircle(mousePos,drag){
     _context.moveTo((dragingstrtLoc.x*w)/dragingstrtLoc.w,(dragingstrtLoc.y*h)/dragingstrtLoc.h)
     _context.lineTo((mousePos.x*w)/mousePos.w,(mousePos.y*h)/mousePos.h)
     _context.stroke();
+  }
+
+
+  function drawTriangle(mousePos,dragingstrtLoc){
+      var w = _canvas.clientWidth;
+      var h = _canvas.clientHeight;
+      var half = mousePos.x-dragingstrtLoc.x;
+      var othrx = dragingstrtLoc.x-half;
+    //   console.log(mousePos.x,"  ", mousePos.y)
+    //   console.log(mousePos.x,"  ",othry);
+      _context.beginPath();
+      _context.moveTo((dragingstrtLoc.x*w)/dragingstrtLoc.w,(dragingstrtLoc.y*h)/dragingstrtLoc.h);
+      _context.lineTo((mousePos.x*w)/mousePos.w,(mousePos.y*h)/mousePos.h);
+      _context.lineTo((othrx*w)/mousePos.w,(mousePos.y*h)/mousePos.h);
+      _context.lineTo((dragingstrtLoc.x*w)/dragingstrtLoc.w,(dragingstrtLoc.y*h)/dragingstrtLoc.h);
+      _context.stroke();
+
   }
 
 
