@@ -663,6 +663,10 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                 dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
                 takeSnapShotCanvas();
                 break;
+            case "rohmbus":
+                dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
+                takeSnapShotCanvas();
+                break;
 
 
         }
@@ -721,6 +725,11 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                 resotreSnapShotCanvas();
                 position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth}
                 drawTriangle(position,dragingstrtLoc);
+                break;
+            case "rohmbus":
+                resotreSnapShotCanvas();
+                position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth}
+                drawRohmbus(position,dragingstrtLoc);
                 break;
 
         }
@@ -1039,6 +1048,31 @@ function drawCircle(mousePos,drag){
       _context.stroke();
 
   }
+
+  function drawRohmbus(mousePos,dragingstrtLoc){
+    var w = _canvas.clientWidth;
+    var h = _canvas.clientHeight;
+    var halfx = mousePos.x-dragingstrtLoc.x;
+    var halfy = mousePos.y-dragingstrtLoc.y;
+    var othry = dragingstrtLoc.y-(((mousePos.y*h)/mousePos.h)-(((halfy)*h)/mousePos.h)/2);
+    var halfpoint =(((mousePos.x)*w)/mousePos.w)-(((halfx)*w)/mousePos.w)/2;
+    var othrx = halfpoint-((dragingstrtLoc.x*w)/dragingstrtLoc.w)
+
+    
+
+
+   
+  //   console.log(mousePos.x,"  ", mousePos.y)
+  //   console.log(mousePos.x,"  ",othry);
+    _context.beginPath();
+    _context.moveTo((dragingstrtLoc.x*w)/dragingstrtLoc.w,((dragingstrtLoc.y*h)/dragingstrtLoc.h));
+    _context.lineTo((((mousePos.x)*w)/mousePos.w)-(((halfx)*w)/mousePos.w)/2,((mousePos.y*h)/mousePos.h)-(((halfy)*h)/mousePos.h)/2);
+    _context.lineTo(((dragingstrtLoc.x*w)/dragingstrtLoc.w),(((mousePos.y*h)/mousePos.h)));
+    _context.lineTo(((dragingstrtLoc.x*w)/dragingstrtLoc.w)-(othrx*w)/mousePos.w,((mousePos.y*h)/mousePos.h)-(((halfy)*h)/mousePos.h)/2);
+    _context.lineTo((dragingstrtLoc.x*w)/dragingstrtLoc.w,((dragingstrtLoc.y*h)/dragingstrtLoc.h));
+    _context.stroke();
+
+}
 
 
   function writeUserData(room, tool, x,y,s) {
