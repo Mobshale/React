@@ -9,6 +9,7 @@ import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import PropagateLoader from "react-spinners/PropagateLoader";
 import { css } from "@emotion/react";
+import Pollsoption from "./Pollsotion";
 
 
 
@@ -290,14 +291,19 @@ leaveSession() {
   return (
    <div>
      <MyProvider>
+
           <div  id='preload' class="preload">
           <PropagateLoader class="loader" color={"#010529"} loading={preloader}  css={override} size={20} />
         </div>
         <Header></Header>
       
+       
         <Video childToParent={(v) =>this.childToParent(v)} ></Video>
         <Chat  userName={userN}  roomName={roomN}></Chat>
+        <Pollsoption></Pollsoption>
         <Canvaboard message="none" roomName={roomN} type="0"> </Canvaboard>
+        
+        
      </MyProvider>
      
    </div>

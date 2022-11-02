@@ -1,39 +1,11 @@
-/**
-* canvas-realistic-pen@1.0.0
-*
-* Library for smooth pen-like drawing on canvas
-* 
-* This is refactored and enhanced version of code taken from this post: http://stackoverflow.com/a/10661872/2248909
-*
-* Authors: 
-*   - mrdob.com
-*   - Alex <http://stackoverflow.com/users/873836/alex>
-*   - Alexey Pedyashev
-* 
-* Options:
-*   penColor       -  Color of the pen. Allowed formats: 
-*                     Array - [0, 0, 0], Hex - #ccc, #cfc4c1, rgb(1, 2, 3), rgba(1, 2, 3, 0)
-*   brushSize:     - widht of line
-*
-* Interface:
-*   destroy()                           - destroys the pen
-*   setPenColor(inColor)                - sets penColor 
-*   setBrushSize(inBrushSize)           - sets brushSize
-*
-* Example:
-*   var canvas          = document.getElementById('draw-canvas');
-*   brush = new RealisticPen(canvas, {
-*       penColor: [217, 101, 110],
-*       brushSize: 3,
-*   });
-*
-*/
-import { initializeApp } from "firebase/app";
+
+import { deleteApp, initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { firebaseConfig } from "../main/firebaseCon";
-import { getDatabase, ref, set,onValue,push, remove, get, child } from "firebase/database";
+import { getDatabase, ref, set,onValue,push, remove, get, child,update } from "firebase/database";
 import {  onChildAdded, onChildChanged, onChildRemoved } from "firebase/database";
-
+import laser from "../svg/arrow.svg"
+import { useSyncExternalStore } from "react";
 
 
 
@@ -48,7 +20,25 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
     var imagesbase = [];
     var base64 = [];
     console.log(tol);
+    var clearedforstudent = false;
+    var llx,lly,hhx,hhy;
+    var Previouswasmove = false;
 
+    var image = new Image();
+    image.src = laser;
+    image.onload = () => {
+    }
+
+    document.addEventListener('keydown',(e)=>textlistner(e) )
+    
+
+   
+
+
+    //writing
+    var typing = 0;
+    var recentWord = [];
+    var UndoList = [];
   
 
 
@@ -77,6 +67,10 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
         _mouseXStart = null,
         _mouseYStart = null,
         snapshot = null,
+        snapshot2 = null,
+        textlistner,
+        cursor = true,
+        interval = null,
         _prevCoords = {
             x: null,
             y: null
@@ -87,6 +81,12 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
         _updateInterval = null,
         _canvas = null,
         _container = null,
+        secPath = null,
+        selectedItem = 0,
+         strtDrag = false,
+         tempPoints = [],
+        temptool = 'pen',
+        clicked = false,
         _canvasDefWidth = 200,
         _canvasDefHeight = 200,
         _options = {
@@ -94,6 +94,8 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
             brushSize: 3
         },
         pages = [],
+        x,
+        y,
         previousPage =1,
         lineWidth = 1,
         prevlw =lineWidth,
@@ -153,6 +155,12 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
           50: 1
       };
 
+      //top bottom 
+        var lowy = 0,lowx = 0,highx = 0,highy = 0;
+        
+
+
+        
 
 
       var maxLineWidht = 0;//Math.max.apply(null, _brushSizes);
@@ -160,9 +168,18 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
             maxLineWidht = Math.max(maxLineWidht, _brushSizes[key]);
         }
         
+
+
+
+     
+
+
       // checking if the user is teacher or student teacher =1 , student =0
-      if(type == "0"){
+
+
+      if(type == "1"){
         onValue(ref(db, '/pages'+'/'+roomName), (snapshot) => {
+            console.log("firbase updated")
             var pstry;
             pstry = snapshot.val();
             if(pstry!= null){
@@ -170,6 +187,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                 console.log(pages);
                 if(pages[currentPage-1]!=null){
                     if (typeof(pages[currentPage-1]) != "undefined"){
+
                         _context.clearRect(0, 0, _canvas.width, _canvas.height);
                         _context.fillStyle = "#F3F6F9";
                         _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
@@ -179,11 +197,60 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
             }
            
             
-          }
-        //   , {
-        //     onlyOnce: true
-        //   }
-          );
+          });
+      }
+
+
+   
+      if(type == "0"){
+        onValue(ref(db, '/' + roomName+"live" ), (snap) => {
+            console.log(snapshot);
+            if(clearedforstudent){
+                snapshot= null;
+                clearedforstudent = false;
+            }
+            var live = snap.val();
+            var w = _canvas.clientWidth;
+            var h = _canvas.clientHeight;
+            if(snapshot!= null){
+                resotreSnapShotCanvas();
+            }
+            takeSnapShotCanvas();
+            _context.drawImage(image, (live.x*w)/live.w,(live.y*h)/live.h);
+            
+
+            
+
+          });
+
+
+
+
+        onValue(ref(db, '/pages'+'/'+roomName), (snapshot) => {
+            console.log("firbase updated")
+            var pstry;
+            pstry = snapshot.val();
+            if(pstry!= null){
+                pages = pstry;
+                console.log(pages);
+                if(pages[currentPage-1]!=null){
+                    if (typeof(pages[currentPage-1]) != "undefined"){
+
+                        _context.clearRect(0, 0, _canvas.width, _canvas.height);
+                        _context.fillStyle = "#F3F6F9";
+                        _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
+                        Redraw(currentPage-1);
+                    }
+                }
+            }
+           
+            
+          });
+
+
+          
+
+
 
 
         const starCountRef = ref(db, '/' + roomName );
@@ -219,6 +286,9 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                     }
                     break;
                 case 2:
+                    snapshot = null;
+                    snapshot2= null;
+                    clearedforstudent = true;
                     _context.clearRect(0, 0, _canvas.width, _canvas.height);
                     _context.fillStyle = "#F3F6F9";
                     _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
@@ -229,9 +299,17 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
             }
         });
         
-    }
     
+    }
 
+
+
+
+    
+     
+
+
+    
     window.onresize = function(event) {
         var w,h;
         w= document.body.clientWidth;
@@ -253,7 +331,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
 
 
 
-     
+      
 
     this.destroy = function() {
         clearInterval(_updateInterval);
@@ -262,9 +340,56 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
     this.updateTool = function(toolU) {
         tool =toolU;
         console.log(tool);
+        switch(tool){
+            case "pen":
+                _canvas.style.cursor = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJ2SURBVHgB7ZXPqxJRFMfvjI4F+cqkTcrjge9B+B+0LJQ27lq4ijZprly6DaF1COKPjYRrVy0CF/aof6Baa6ChOPkLFcdMm1+dM93RafzxZuptgnfgC3ecO+dzz497JOTKNsZMp9OAoihvZFku4xp/I5dsbL/fP221Wl/D4bCKwnWn0znDd+SSDE/N6ZBgMKjJBNuKzC4dHTgQ5PF4bququn7R7XZJPB4/kSTpHcBOiQlmJ6cMpCvAcdz5ZDJhF4tF1u12v4jFYkc8z683+f1+Uq1W38K+x/AogVQ7ETF4SnB+Ho1GTxKJxDFC2u32q1KpJPh8vvVGjHK5XM4xahv+tYgRcranJrNarfay2WwKoVBIRTUajW42m70P390EOYmFrOEGdhfECEMIwur1Og+p5VOp1CP47piCOB3EXBBJAIuLRcZi7zKsSaVSEbxe70N4FEEL0AyE6VuBZEJD2wmyAkHDmoxGIwGW36ljBP2gUEXf5/wXCDZBsVjky+XyUwpCyBL0k0ai7gNp3WUVUigUvgHoWSaTaRoi2YJojk1r52q1eh2JRJ5YgUB3Pc/n83WyXRPV/A1rWrtgSAZsQL6Q3ynTI1F2QdCMqXNQEGsDMqMgrMt6ChwCaXcGYdBFjA3InELkQxBCtkcEI4riHyPFCMnlcnEKMbYzQhRi0TCKa6A76XT6wWAweD8ejz8Oh8PPcEc+9Xq9D8lkMgLv74Hugo5ALmJzlumG4+IG6BZ1dJ06wtPqN14gmza2FYljD1SljrCTsAaYpjnZFP7CmpADEel/ai4qffLiqSUKFSlEP8xfgYwwlmzyr1KYHoUtgBU4Y9D/Y78AxCeE/aWoyrkAAAAASUVORK5CYII=) 2 22, auto";
+                break;
+            case "straight":
+                _canvas.style.cursor = "crosshair";
+                break;
+            case "elipse":
+                _canvas.style.cursor = "crosshair";
+                break;
+            case "rec":
+                _canvas.style.cursor = "crosshair";
+                break;
+            case "triangle":
+                _canvas.style.cursor = "crosshair";
+                break;
+            case "rohmbus":
+                _canvas.style.cursor = "crosshair";
+                break;
+            case "arrow":
+                _canvas.style.cursor = "crosshair";
+                break;
+            case "laser":
+                _canvas.style.cursor = "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGZpbHRlciB4PSItMTIwJSIgeT0iLTEyMCUiIHdpZHRoPSIzNDAlIiBoZWlnaHQ9IjM0MCUiIGZpbHRlclVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgaWQ9ImEiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjQiIGluPSJTb3VyY2VHcmFwaGljIi8+PC9maWx0ZXI+PC9kZWZzPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDkgOSkiIGZpbGw9IiNGRjAxMDAiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGNpcmNsZSBmaWx0ZXI9InVybCgjYSkiIGN4PSI1IiBjeT0iNSIgcj0iNSIvPjxwYXRoIGQ9Ik01IDhhMyAzIDAgMSAwIDAtNiAzIDMgMCAwIDAgMCA2em0wLTEuNzE0YTEuMjg2IDEuMjg2IDAgMSAxIDAtMi41NzIgMS4yODYgMS4yODYgMCAwIDEgMCAyLjU3MnoiIGZpbGwtcnVsZT0ibm9uemVybyIvPjwvZz48L3N2Zz4='),auto";
+                break;
+            case "drag":
+                _canvas.style.cursor = "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSI+PHBhdGggZD0iTTkuMTU0IDBBMS4yMjYgMS4yMjYgMCAwIDAgOC4xMS42MDdjLS4yMDguMzQ4LS4yOTUuNzY4LS4zNDUgMS4yMzItLjEuOTI5LS4wMjUgMi4wNTgtLjAxNCAzLjA0Ni4wMDcuNTEyLjAwNCAxLjA0MS0uMDAxIDEuNTQ3YTYzLjMxIDYzLjMxIDAgMCAxLS4zNS0uOXYtLjAwM2wtLjAwMS0uMDAxYy0uMzU5LS45MjYtLjY5Mi0xLjg3LTEuMTUtMi41NjItLjIzLS4zNDYtLjQ5Ni0uNjQtLjg1LS44MDctLjM1Ni0uMTY2LS43OTItLjE2NS0xLjIwNC4wMmwtLjAwMy4wMDEtLjAwNC4wMDJjLS40LjE4Ny0uNjUuNTYzLS43MjIuOTU4LS4wNzQuMzk0LS4wMTkuODEyLjA4MiAxLjI2Mi4yMDMuOS42MTMgMS45NC44OTIgMi45Ny4yMi44MTMuNDM0IDEuNjMyLjYxMyAyLjMyMmExMy44NTUgMTMuODU1IDAgMCAwLS44NzQtLjgxNmMtLjU0My0uNDYyLTEuMTQtLjg4OS0xLjc1Ny0xLjExOS0uNjE2LS4yMy0xLjMyMy0uMjQ0LTEuODQ1LjIxOGwtLjAwNC4wMDQtLjAwNC4wMDRjLS40MS4zODQtLjYxNC44Ni0uNTYgMS4zMjMuMDUzLjQ2NC4zMDcuODcxLjY0MiAxLjI5LjY2OS44MzYgMS43MiAxLjc1MSAyLjczNCAyLjk2OCAxLjEzNSAxLjM2MiAyLjM3MiAzLjUzOCAzLjI1MSA0LjY4MWwuMTE4LjE1M2g3LjcwNGwuMDg2LS4yNzRjLjE1LS40ODIuMzE4LTEuNDQyLjU4Ny0yLjY0Mi4yNjgtMS4yLjYyNy0yLjYxIDEuMTA0LTMuODQ3LjYzNS0xLjY0NiAxLjI4NS0zLjE5NCAxLjU3Ny00LjQyMy4xNDctLjYxNC4yMTQtMS4xNTEuMDk1LTEuNjI2YTEuMzA2IDEuMzA2IDAgMCAwLTEuMDQ4LS45NmMtLjQ2Ny0uMDg4LS45MS4xMi0xLjIyLjQzNC0uMzEuMzE2LS41NDYuNzM2LS43NjUgMS4yMDctLjE3LjM2NS0uMzI3Ljc2NS0uNDgxIDEuMTY2bC0uMDEtMS43MzRjLS4wMDQtMS4wMDcuMDU5LTIuMTM2LS4wMTctMy4wNDQtLjAzOC0uNDU1LS4xMDMtLjg1NS0uMjcyLTEuMTkxLS4xNjUtLjMyNy0uNTI0LS42LS45MjUtLjU4NWExLjE4IDEuMTggMCAwIDAtLjk2OS40NmMtLjIyMy4yODUtLjM1NC42MzYtLjQ1OSAxLjAyMy0uMjEuNzczLS4zMDIgMS43MDktLjQ0MyAyLjQ4bC0uMTk1IDEuMDkyYTQ1Ljg3NCA0NS44NzQgMCAwIDEtLjEzNi0xLjE4N2MtLjA5NC0uOTM3LS4xNi0yLjA1NS0uMzU2LTIuOTctLjA5Ny0uNDU3LS4yMjItLjg2Ni0uNDM1LTEuMTk5LS4yMTQtLjMzMi0uNTgyLS41OTctMS4wMS0uNTc5aC4wM0w5LjE1NSAweiIgZmlsbD0iIzAwMCIvPjxwYXRoIGQ9Ik05LjE1Ljc4NGguMDQ5Yy4xMzItLjAwNS4xOTUuMDMuMzE3LjIyLjEyMy4xOTIuMjQxLjUyOC4zMjkuOTM5LjE3NS44Mi4yNDUgMS45MjQuMzQyIDIuODg0LjIxMiAyLjEwOC41MTQgMy42MzUuNTE0IDMuNjM1bC43Ny0uMDEzcy4yODctMS43NjMuNTk4LTMuNDYzYy4xNS0uODIuMjQ3LTEuNzQ2LjQyOS0yLjQxNy4wOS0uMzM1LjIwNy0uNi4zMTktLjc0My4xMTItLjE0Mi4xNjktLjE3NC4zMTktLjE2M2wuMDMuMDAyLjAyOC0uMDAyYy4xMi0uMDA5LjExNi0uMDEuMi4xNTYuMDg0LjE2Ny4xNTcuNDk1LjE5MS45MDMuMDY4LjgxNS4wMSAxLjk0Mi4wMTUgMi45ODNsLjAxOSAzLjcwNS43NDUuMTY4Yy40NTUtLjk0OC44MTktMi4xMTIgMS4yMjEtMi45NzguMjAxLS40MzMuNDE1LS43ODcuNjEzLS45ODguMTk3LS4yLjMyMy0uMjUuNTE2LS4yMTNoLjAwNGwuMDA1LjAwMmMuMjk5LjA1MS4zNi4xMjcuNDI0LjM3OC4wNjMuMjUuMDM1LjY5Ny0uMDk3IDEuMjU0LS4yNjUgMS4xMTUtLjkwNyAyLjY2NC0xLjU0NiA0LjMyMi0uNTAyIDEuMy0uODY2IDIuNzQtMS4xMzggMy45NTctLjIyLjk4My0uMzg3IDEuODM0LS40OTkgMi4zMDRINy4xNDRjLS44MDItMS4wOS0xLjk5Ny0zLjE2LTMuMTU3LTQuNTUyLTEuMDYtMS4yNzEtMi4xMzYtMi4yMi0yLjcyNC0yLjk1Ni0uMjk0LS4zNjgtLjQ1LS42NzMtLjQ3Ni0uODktLjAyNS0uMjE1LjAyNi0uMzg2LjMxMi0uNjU2LjI3LS4yMzcuNTgyLS4yNDMgMS4wNDktLjA2OS40NjcuMTc1IDEuMDE4LjU1MiAxLjUyNC45ODJhMTUuODggMTUuODggMCAwIDEgMS44NDcgMS45MDRsLjY4Ny0uMzRzLS41MDQtMi4wMS0xLjAxLTMuODcyQzQuOTAzIDYuMDggNC40OTQgNS4wMyA0LjMxNCA0LjIzYy0uMDktLjQtLjExNi0uNzMzLS4wNzctLjk0Ny4wNC0uMjEzLjA5Ny0uMzAyLjI4My0uMzkuMjQ4LS4xMS4zODgtLjA5OC41NDctLjAyNC4xNTkuMDc0LjM0NC4yNTEuNTI5LjUzLjM2OC41NTcuNzEgMS40NzYgMS4wNzMgMi40MTJsLS4wMDItLjAwNGMuMzcuOTgzIDEuMDc4IDIuNzE0IDEuMDc4IDIuNzE0bC43NTUtLjEzN3MuMDU1LTEuOTEuMDM2LTMuNTA5Yy0uMDEyLTEuMDE4LS4wNzgtMi4xMzYuMDEtMi45NTIuMDQzLS40MDguMTMxLS43MzUuMjM4LS45MTUuMTA3LS4xNzkuMTctLjIyNS4zNjctLjIyNHoiIGZpbGw9IiNGRkYiLz48cGF0aCBkPSJNNy43MjMgMTAuOHY0LjY5MmMwIC4xOTIuMjIzLjM0OC41LjM0OC4yNzYgMCAuNS0uMTU2LjUtLjM0OFYxMC44YzAtLjE5Mi0uMjI0LS4zNDgtLjUtLjM0OC0uMjc3IDAtLjUuMTU2LS41LjM0OHptMi4yMDYgMHY0LjY5MmMwIC4xOTIuMjI0LjM0OC41LjM0OHMuNS0uMTU2LjUtLjM0OFYxMC44YzAtLjE5Mi0uMjI0LS4zNDgtLjUtLjM0OHMtLjUuMTU2LS41LjM0OHptMi4yMDYgMHY0LjY5MmMwIC4xOTIuMjI0LjM0OC41LjM0OC4yNzcgMCAuNS0uMTU2LjUtLjM0OFYxMC44YzAtLjE5Mi0uMjIzLS4zNDgtLjUtLjM0OC0uMjc2IDAtLjUuMTU2LS41LjM0OHoiIGZpbGw9IiMwMDAiLz48L2c+PC9zdmc+'),auto";
+                break;
+            case "eraser":
+                _canvas.style.cursor = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAANKSURBVHgB1VTdS5NhFD/7iuXa8KNw7SK/IjBYo13soqvEITENtj9AwZiCOCTvQrNWF9rFFPGLrC1iF10Oiy68mBSUF2KB4YabhKKyTfFCc+3Lzb2ds72LsfbxCkZ04Mf7Puc5z/k95+M5AP+R8OAvCW9nZ6cyHo8/SSaTc4RQKKQ+S0JyxFtbW6va39//ZjKZmMbGRkar1TJOp5MhYtwXwBkQkgMROnyXIcmGw+FgYrHY00JkQm4cqYPCaDQ6ZrFY7i4sLPxhMDg4SJ8hTOOWRCJ5jf8npyUiEgE6eGy1Wk12u72gIZHJZDLr4eHhVnl5+YdsslL5pH1+JBIx22y2h9PT01BKpFIpLC4ufhKJRFpcxhEM6fmlSMLh8P35+XlOJCTBYBC2t7dr8fdctv+iRHjI4HK5LAMDA8BVFAoFyOVyH/6KIKsxCtVIgC188+Dg4CV2GJxGpqamYHR09AHklEWQY5d6K/gg67HD3huNRrlKpYLNzU3gIsPDw8Dn84fa29s/4zIK6Rol8xIhSUMikXB2dXXV4AHo6en5KhaLFcvLy0VJent7QaPRzKrV6le4DCEi2UTCnGgE1dXVj3Q6XY1er08drKiosK2urnbjnrFQQxBJU1PTC3y4kyxJGHEMWe2dTUSNIcLZVXl0dAStra3BiYmJOTqgVCqfu91uull3LhlFjbZv6urqiCTIElHaEsC2dq4QqXRlZeUePsrUDFtfX/eZzebbqL+GuIFks1js32OHRtHu7u5H3FMiahFViPNQYuZRO8oQVzY2NibJocFgYAKBgLuzs/M66hsQKuzELx0dHak9rKe3paXlFurrERdZEiGUGARkcAFxmSJAJ/aRkRGGnOKwdPn9/rG9vT0HXaC5uZnxer3+vr4+HdpeRVxClBWLJFuZqhF7gAjL0PGz8fFxvcfjSY0WevVUv5mZmQDWyog1/I52PyBdlxgUqUu+qMSQznVtW1ubBlP3dmlpicnA5/N5+vv770C6bhS9lEu6eHnWFP45NioJS5xxRLdNsrenKH5CusNOWH1BEeTRMTnI6MgZpYYeYhhOmS5eEX0mMhELPktGoBd/zCWSUkTAOs4QZqZ8JsokS8Kp8KWICtlwdv5P5BchBHaEIRURoQAAAABJRU5ErkJggg==) 8 18, auto";
+                break;
+            case "selector":
+                _canvas.style.cursor = "crosshair";
+                break;
+            case "text":
+                _canvas.style.cursor = "text";
+                break;
+
+
+            
+           
+
+
+    
+          }
     }
 
     this.clear = function(toolU) {
+        snapshot = null
+        snapshot2 = null
         _context.clearRect(0, 0, _canvas.width, _canvas.height);
         _context.fillStyle = "#F3F6F9";
         _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
@@ -276,6 +401,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
         // set(newPostRef, pages[previousPage-1]);
         drawimage();
         pathsry = [];
+        
     }
     
 
@@ -293,7 +419,10 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
 
     // when a teacher chages the page on whiteboard
     this.pageChange = function (val) {
+        snapshot=null
+        snapshot2=null
         currentPage = val;
+        console.log(val);
         writeUserData(roomName,tool,0,0,3);
 
        console.log(pages);
@@ -348,12 +477,22 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
             _options.penColor[1] + ", " + _options.penColor[2] + ",  " + opacity + ")";
     }
 
+    function arrayRemove(arr, value) { 
+    
+        return arr.filter(function(ele){ 
+            return ele != value; 
+        });
+    }
+
     // redrawing the previous page
     function Redraw(val) {
+        snapshot =null
+        snapshot2 = null
         console.log("page ",val);
         if(pages!= null){
+            console.log(pages)
             pathsry = pages[val];
-        console.log(pathsry);
+            console.log(pathsry);
         }
         
         if (typeof pathsry == 'undefined'){
@@ -401,9 +540,6 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                                     else {
                                         _currentDelta = delta;
                                     }
-
-
-                                    
 
 
                                     var xPrev = dx,
@@ -471,6 +607,43 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                     var dragingstrtLoc = {x:path[0].x,y:path[0].y,w:path[0].w,h:path[0].h}
                     drawRec(mousePos,dragingstrtLoc);
                     break;
+                case "triangle":
+                    _context.lineWidth = path[0].lw;
+                    var mousePos = {x:path[1].x,y:path[1].y,w:path[1].w,h:path[1].h}
+                    var dragingstrtLoc = {x:path[0].x,y:path[0].y,w:path[0].w,h:path[0].h}
+                    drawTriangle(mousePos,dragingstrtLoc);
+                    break;
+                case "rohmbus":
+                    _context.lineWidth = path[0].lw;
+                    var mousePos = {x:path[1].x,y:path[1].y,w:path[1].w,h:path[1].h}
+                    var dragingstrtLoc = {x:path[0].x,y:path[0].y,w:path[0].w,h:path[0].h}
+                    drawRohmbus(mousePos,dragingstrtLoc);
+                    break;
+                case "arrow":
+                    _context.lineWidth = path[0].lw;
+                    var mousePos = {x:path[1].x,y:path[1].y,w:path[1].w,h:path[1].h}
+                    var dragingstrtLoc = {x:path[0].x,y:path[0].y,w:path[0].w,h:path[0].h}
+                    drawArrow(mousePos,dragingstrtLoc);
+                    break;
+                case "text":
+                    var w = _canvas.clientWidth;
+                    var h = _canvas.clientHeight;   
+                    
+                    var pa = path[0].text;
+                    console.log(pa)
+                    var text = "";
+                    for(var k= 0;k<pa.length;k++){
+                        console.log(pa[k])
+                        text = text+""+pa[k];
+                    }
+                    console.log(text);
+                    
+                    _context.font =  "30px Arial";
+                    _context.fillStyle = "black";
+                    //  _context.fillText(text,path[0].x,path[0].y);
+                    _context.fillText(text,(path[0].x*w)/path[0].w,(path[0].y*h)/path[0].h);
+                    break;
+                
 
             }
         })
@@ -535,8 +708,34 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
 
         _canvas  = inCanvas;
         _context = _canvas.getContext("2d");
+        saveState();
+
+        
+    
+
+        if(type == "1"){
+            _canvas.addEventListener('mousemove', function(event) {
+
+                var canvasOffset = _offset(_canvas); 
+                var w = _canvas.clientWidth;
+                var h = _canvas.clientHeight; 
+               
+                set(ref(db, '/' + roomName+"live"), {
+                    x: event.pageX - canvasOffset.left,
+                    y: event.pageY  - canvasOffset.top,
+                    w: w,
+                    h: h
+                    
+                  });
+
+
+              }, false);
+    
+         }
+
 
         _attachEventListeners();
+
 
         _context.globalCompositeOperation = 'source-over';
         _mouseX = _canvas.width / 2;
@@ -612,6 +811,10 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
         }
     }
 
+
+  
+
+
     function takeSnapShotCanvas() {
         snapshot = _context.getImageData(0, 0, _canvas.width, _canvas.height);
     }
@@ -619,14 +822,54 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
         _context.putImageData(snapshot,0,0);
     }
 
+    function takeSnapShotCanvas2() {
+        snapshot2 = _context.getImageData(0, 0, _canvas.width, _canvas.height);
+    }
+    function resotreSnapShotCanvas2() {
+        _context.putImageData(snapshot2,0,0);
+    }
+
+
+
     function _strokeStart(mouseX, mouseY) {
+        if(snapshot!= null){
+            if(Previouswasmove){
+                _context.clearRect(0, 0, _canvas.width, _canvas.height);
+                _context.fillStyle = "#F3F6F9";
+                _context.fillRect(0, 0, _canvas.width, _canvas.height);
+                Redraw(currentPage-1);
+                takeSnapShotCanvas();
+                Previouswasmove = false;
+            }
+            
+          }
+        clearInterval(interval);
+        document.removeEventListener('keydown',textlistner);
+        if(recentWord.length>0){
+            if(tool=="text"){
+                points.push({x:dragingstrtLoc.x,y:dragingstrtLoc.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:lowx,ly:lowy,hx:highx,hy:highy,text:recentWord})
+                pathsry.push(points);  
+                points = []    
+            }else{
+              
+                console.log(recentWord)
+                points.push({x:dragingstrtLoc.x,y:dragingstrtLoc.y,z:"text",w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:lowx,ly:lowy,hx:highx,hy:highy,text:recentWord})
+                pathsry.push(points);
+                points = []   
+                recentWord = [];
+                snapshot = null;
+                snapshot2 = null;  
+            }
+            
+        }
+      
         lineWidth = _brushSizes[_currentDelta] + _options.brushSize / maxLineWidht;
         if(!lineWidth){
             lineWidth=prevlw;
         }else{
             prevlw=lineWidth;
         }
-
+        dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
         if(type == "1"){
             writeUserData(roomName,tool,mouseX,mouseY,1)
         }
@@ -648,35 +891,142 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                 }
                 break;
             case "straight":
+                // _canvas.style.cursor = "crosshair";
                 dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
                 takeSnapShotCanvas();
                 break;
             case "elipse":
+                // _canvas.style.cursor = "crosshair";
                 dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
                 takeSnapShotCanvas();
                 break;
             case "rec":
+                // _canvas.style.cursor = "crosshair";
                 dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
                 takeSnapShotCanvas();
                 break;
             case "triangle":
+                // _canvas.style.cursor = "crosshair";
                 dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
                 takeSnapShotCanvas();
                 break;
             case "rohmbus":
+                // _canvas.style.cursor = "crosshair";
                 dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
                 takeSnapShotCanvas();
                 break;
-
-
+            case "arrow":
+                // _canvas.style.cursor = "crosshair";
+                dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
+                takeSnapShotCanvas();
+                break;
+            case "eraser":
+                break;
+            case "text":
+                if(recentWord.length==0){
+                    if(snapshot2!==null){
+                        resotreSnapShotCanvas2();
+                    }                    
+                }
+                UndoList = [];
+                recentWord = [];
+                snapshot = null;
+                snapshot2 = null;                
+                dragingstrtLoc = {x:mouseX,y:mouseY,w:_canvas.clientWidth,h:_canvas.clientHeight}
+                x=mouseX;
+                y=mouseY;
+                saveState();    
+                blinkingcursor(x,y);
+                break;
+            case "drag":
+    
+                Previouswasmove = true;
+                points = [];
+                pathsry.every(path=>{
+            
+                  console.log(path)
+                  var lastpoint = path.length-1;
+                  var lx,ly,hx,hy;
+                  console.log(lastpoint);
+                  lx = path[lastpoint].lx;
+                  ly = path[lastpoint].ly;
+                  hx = path[lastpoint].hx;
+                  hy = path[lastpoint].hy;
+                  console.log(mouseX, mouseY)
+                  console.log(lx, ly, hx, hy);
+                  if(lx < mouseX){
+                    if(hx > mouseX){
+                      if(ly < mouseY){
+                        if(hy > mouseY){
+                          console.log('got in control of the element');
+                          selectedItem = pathsry.indexOf(path);
+                          console.log(pathsry);
+                          console.log(selectedItem); 
+                          secPath = path;
+                          pathsry = arrayRemove(pathsry,path);
+                          Selecttheelement(lx,ly,hx,hy,path[lastpoint].z);
+                          console.log("manojdd")
+                          console.log(pathsry);
+                          pages[currentPage-1]= pathsry;
+                          strtDrag = true;
+                          clicked = true;
+                          temptool = path[lastpoint].z;
+                        //   _context.clearRect(0, 0, _canvas.width, _canvas.height);
+                        //   _context.fillStyle = "#F3F6F9";
+                        //   _context.fillRect(0, 0, _canvas.width, _canvas.height);
+                          Redraw(currentPage-1);
+                          takeSnapShotCanvas();
+                          return false;
+                        }
+                      }
+                    }
+                  }
+                  return true;
+                });
+                break;
         }
-       
-        
-
-        
     }
 
+
+    function Selecttheelement(lx,ly,hx,hy, tool){
+        llx=lx;lly=ly;hhx=hx;hhy=hy;
+        pages[currentPage-1]= pathsry;
+        _context.clearRect(0, 0, _canvas.width, _canvas.height);
+        _context.fillStyle = "#F3F6F9";
+        _context.fillRect(0, 0, _canvas.width, _canvas.height);
+        Redraw(currentPage-1);
+        takeSnapShotCanvas();
+       
+       
+    }
+
+
     function _stroke( mouseX, mouseY ) {
+
+        if(lowy===0 || highy === 0){
+            lowy=mouseY;
+            highy=mouseY;
+          }else{
+            if(lowy >mouseY){
+              lowy = mouseY;
+            }
+            if(highy <mouseY){
+              highy = mouseY;
+            }
+        
+          }
+          if(lowx===0 || highx === 0){
+            lowx=mouseX;
+            highx=mouseX;
+          }else{
+            if(lowx >mouseX){
+              lowx = mouseX;
+            }
+            if(highx <mouseX){
+              highx = mouseX;
+            }
+          }
+
         lineWidth = _brushSizes[_currentDelta] + _options.brushSize / maxLineWidht;
         if(!lineWidth){
             lineWidth=prevlw;
@@ -703,38 +1053,366 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                     _currentDelta = delta;
                 }
                 if(type == "1"){
-                    points.push({x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth})
+                    points.push({x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:0,ly:0,hx:0,hy:0})
                 }
+                
                 break;
             case 'straight':
                 resotreSnapShotCanvas();
-                 position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth}
+                 position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:0,ly:0,hx:0,hy:0}
                 drawLine(position,dragingstrtLoc);
                 break;
             case "elipse":
                 resotreSnapShotCanvas();
-                position = { x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth}
+                position = { x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:0,ly:0,hx:0,hy:0}
                 drawCircle(position,dragingstrtLoc);
                 break;
             case "rec":
                 resotreSnapShotCanvas();
-                position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth}
+                position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:0,ly:0,hx:0,hy:0}
                 drawRec(position,dragingstrtLoc);
                 break;
             case "triangle":
                 resotreSnapShotCanvas();
-                position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth}
+                position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:0,ly:0,hx:0,hy:0}
                 drawTriangle(position,dragingstrtLoc);
                 break;
             case "rohmbus":
                 resotreSnapShotCanvas();
-                position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth}
+                position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:0,ly:0,hx:0,hy:0}
                 drawRohmbus(position,dragingstrtLoc);
                 break;
+            case "eraser":
+                erase(mouseX,mouseY);
+                break;
+            case "arrow":
+                resotreSnapShotCanvas();
+                position = {x:mouseX,y:mouseY,z:tool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:0,ly:0,hx:0,hy:0}
+                drawArrow(position,dragingstrtLoc);
+                break;
+            case "drag":
+                    tempPoints = []; 
+                    if(strtDrag){
+                        console.log(temptool);
+
+                        if(temptool === "pen"){
+                        clicked = false;
+                        tempPoints = [];
+                        if(snapshot!=null){
+                            resotreSnapShotCanvas();
+                        }
+                        var factx = dragingstrtLoc.x - (mouseX-12);
+                        var facty = dragingstrtLoc.y - (mouseY-12);
+                        var path = secPath;
+                        _context.beginPath();
+                        tempPoints.push({x:(path[0].x-12)-factx,y:(path[0].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:0,ly:0,hx:0,hy:0})      
+                        _context.moveTo((path[0].x-12)-factx,(path[0].y-12)-facty);
+                        for(var k = 1; k < path.length; k++){
+                            _context.lineTo((path[k].x-12)-factx,(path[k].y-12)-facty);
+                        tempPoints.push({x:(path[k].x-12)-factx,y:(path[k].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[k].lx-12)-factx,ly:(path[k].ly-12)-facty,hx:(path[k].hx-12)-factx,hy:(path[k].hy-12)-facty})      
+                        }
+                        _context.stroke();
+                        _context.strokeStyle= _context.strokeStyle;;
+                        drawAround(factx,facty);
+
+                        
+                    }else if(temptool === "text"){
+                        // clicked = false;
+                        // tempPoints = [];
+                        // resotreSnapShotCanvas();
+                        // var factx = dragingstrtLoc.x - (mouseX-12);
+                        // var facty = dragingstrtLoc.y - (mouseY-12);
+                        // var path = secPath;
+                        // ctx.font = "14px  Comic Sans MS";
+                        // ctx.fillStyle = colour;
+                        // ctx.fillText(path[0].k, (path[0].x-12)-factx, (path[0].y-12)-facty);
+                        // tempPoints.push({x:(path[0].x-12)-factx,y:(path[0].y-12)-facty,z:temptool,a:colour,b:linew,w:w,h:h,k:path[0].k,lx:(path[0].lx-12)-factx,ly:(path[0].ly-12)-facty,hx:(path[0].hx-12)-factx,hy:(path[0].hy-12)-facty});
+                    }else if(temptool === "straight" ){
+                        clicked = false;
+                        tempPoints = [];
+                        if(snapshot!=null){
+                            resotreSnapShotCanvas();
+                        }
+                        var factx = dragingstrtLoc.x - (mouseX-12);
+                        var facty = dragingstrtLoc.y - (mouseY-12);
+                        var path = secPath;
+                        var strt = {x:(path[0].x-12)-factx,y:(path[0].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[0].lx-12)-factx,ly:(path[0].ly-12)-facty,hx:(path[0].hx-12)-factx,hy:(path[0].hy-12)-facty}; 
+                        var fnf = {x:(path[1].x-12)-factx,y:(path[1].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[1].lx-12)-factx,ly:(path[1].ly-12)-facty,hx:(path[1].hx-12)-factx,hy:(path[1].hy-12)-facty};
+                        drawLine(fnf,strt)
+                        drawAround(factx,facty);
+                        tempPoints.push(strt);
+                        tempPoints.push(fnf);  
+                    }else if(temptool === "elipse" ){
+                        clicked = false;
+                        tempPoints = [];
+                        if(snapshot!=null){
+                            resotreSnapShotCanvas();
+                        }
+                        var factx = dragingstrtLoc.x - (mouseX-12);
+                        var facty = dragingstrtLoc.y - (mouseY-12);
+                        var path = secPath;
+                        var strt = {x:(path[0].x-12)-factx,y:(path[0].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[0].lx-12)-factx,ly:(path[0].ly-12)-facty,hx:(path[0].hx-12)-factx,hy:(path[0].hy-12)-facty}; 
+                        var fnf = {x:(path[1].x-12)-factx,y:(path[1].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[1].lx-12)-factx,ly:(path[1].ly-12)-facty,hx:(path[1].hx-12)-factx,hy:(path[1].hy-12)-facty};
+                        drawCircle(fnf,strt)
+                        drawAround(factx,facty);
+                        tempPoints.push(strt);
+                        tempPoints.push(fnf);  
+                    }else if(temptool === "rec"){
+                        clicked = false;
+                        tempPoints = [];
+                        if(snapshot!=null){
+                            resotreSnapShotCanvas();
+                        }
+                        var factx = dragingstrtLoc.x - (mouseX-12);
+                        var facty = dragingstrtLoc.y - (mouseY-12);
+                        var path = secPath;
+                        var strt = {x:(path[0].x-12)-factx,y:(path[0].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[0].lx-12)-factx,ly:(path[0].ly-12)-facty,hx:(path[0].hx-12)-factx,hy:(path[0].hy-12)-facty}; 
+                        var fnf = {x:(path[1].x-12)-factx,y:(path[1].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[1].lx-12)-factx,ly:(path[1].ly-12)-facty,hx:(path[1].hx-12)-factx,hy:(path[1].hy-12)-facty};
+                        drawRec(fnf,strt)
+                        tempPoints.push(strt);
+                        tempPoints.push(fnf);  
+                    }
+                    else if(temptool === "triangle"){
+                        clicked = false;
+                        tempPoints = [];
+                        if(snapshot!=null){
+                            resotreSnapShotCanvas();
+                        }
+                        var factx = dragingstrtLoc.x - (mouseX-12);
+                        var facty = dragingstrtLoc.y - (mouseY-12);
+                        var path = secPath;
+                        var strt = {x:(path[0].x-12)-factx,y:(path[0].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[0].lx-12)-factx,ly:(path[0].ly-12)-facty,hx:(path[0].hx-12)-factx,hy:(path[0].hy-12)-facty}; 
+                        var fnf = {x:(path[1].x-12)-factx,y:(path[1].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[1].lx-12)-factx,ly:(path[1].ly-12)-facty,hx:(path[1].hx-12)-factx,hy:(path[1].hy-12)-facty};
+                        drawTriangle(fnf,strt)
+                        drawAround(factx,facty);
+                        tempPoints.push(strt);
+                        tempPoints.push(fnf);  
+                    }else if(temptool === "rohmbus"){
+                        clicked = false;
+                        tempPoints = [];
+                        if(snapshot!=null){
+                            resotreSnapShotCanvas();
+                        }
+                        var factx = dragingstrtLoc.x - (mouseX-12);
+                        var facty = dragingstrtLoc.y - (mouseY-12);
+                        var path = secPath;
+                        var strt = {x:(path[0].x-12)-factx,y:(path[0].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[0].lx-12)-factx,ly:(path[0].ly-12)-facty,hx:(path[0].hx-12)-factx,hy:(path[0].hy-12)-facty}; 
+                        var fnf = {x:(path[1].x-12)-factx,y:(path[1].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[1].lx-12)-factx,ly:(path[1].ly-12)-facty,hx:(path[1].hx-12)-factx,hy:(path[1].hy-12)-facty};
+                        drawRohmbus(fnf,strt)
+                        drawAround(factx,facty);
+                        tempPoints.push(strt);
+                        tempPoints.push(fnf);  
+                    }else if(temptool === "arrow"){
+                        clicked = false;
+                        tempPoints = [];
+                        if(snapshot!=null){
+                            resotreSnapShotCanvas();
+                        }
+                        var factx = dragingstrtLoc.x - (mouseX-12);
+                        var facty = dragingstrtLoc.y - (mouseY-12);
+                        var path = secPath;
+                        var strt = {x:(path[0].x-12)-factx,y:(path[0].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[0].lx-12)-factx,ly:(path[0].ly-12)-facty,hx:(path[0].hx-12)-factx,hy:(path[0].hy-12)-facty}; 
+                        var fnf = {x:(path[1].x-12)-factx,y:(path[1].y-12)-facty,z:temptool,w:_canvas.width,h:_canvas.height,lw:lineWidth,lx:(path[1].lx-12)-factx,ly:(path[1].ly-12)-facty,hx:(path[1].hx-12)-factx,hy:(path[1].hy-12)-facty};
+                        drawArrow(fnf,strt)
+                        drawAround(factx,facty);
+                        tempPoints.push(strt);
+                        tempPoints.push(fnf);  
+                    }
+
+                        
+                    }else{
+                        return;
+                    }   
+                break;
+            
 
         }
-       
+        
+
     }
+    function erase(mouseX,mouseY){
+        points = [];
+      console.log(pathsry);
+      pathsry.forEach(path=>{
+        if(path.length!=0){
+          console.log(path)
+        var lastpoint = path.length-1;
+        
+        var lx,ly,hx,hy;
+        console.log(lastpoint);
+        
+        lx = path[lastpoint].lx;
+        ly = path[lastpoint].ly;
+        hx = path[lastpoint].hx;
+        hy = path[lastpoint].hy;
+        
+        console.log(lx, ly, hx, hy);
+  
+        if(lx < mouseX){
+          if(hx > mouseX){
+            if(ly < mouseY){
+              if(hy > mouseY){
+                console.log(path);
+                var index = pathsry.indexOf(path);
+                console.log(index," manojd");
+                // socket.emit('erase',index,Roomname,pagecount);
+                pathsry = arrayRemove(pathsry,path);
+                console.log(pathsry);
+                pages[currentPage-1] = pathsry;
+                console.log(pages)
+                _context.clearRect(0, 0, _canvas.width, _canvas.height);
+                _context.fillStyle = "#F3F6F9";
+                _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
+                Redraw(currentPage-1);
+                if(type == "1"){
+                    const postListRef = ref(db, '/pages'+'/'+roomName+'/'+(previousPage-1));
+                    set(postListRef,pathsry);
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+    
+    }
+
+    
+
+    function textlistner(e) {
+            console.log(e.key);
+        if(tool=="text"){
+            if(e.keyCode=== 8 ){
+                if(recentWord.length>0){
+                    if(interval != null){
+                        clearInterval(interval);
+                        if(!cursor){
+                        resotreSnapShotCanvas2();
+                        snapshot2 = null;
+                        cursor = true;
+                        snapshot = null;
+                        undo();
+                      //   points.pop();
+                        var recentWords  = recentWord[recentWord.length-1];
+                        x -= _context.measureText(recentWords).width;
+                        
+                      //   Rwidth -= ctx.measureText(recentWords).width;
+                        recentWord.pop();
+                        if(recentWord.length!=0){
+                            blinkingcursor(x,y);
+                        }
+                        
+
+                        }else{
+                        snapshot2 = null;
+                        cursor = true;
+                        snapshot = null;
+                        undo();
+                      //   points.pop();
+                        var recentWords  = recentWord[recentWord.length-1];
+                        x -= _context.measureText(recentWords).width;
+                        
+                      //   Rwidth -= ctx.measureText(recentWords).width;
+                        recentWord.pop();
+                        if(recentWord.length!=0){
+                            blinkingcursor(x,y);
+                        }
+                        }
+                        
+                      }else{
+                      snapshot = null;
+                      undo();
+                      var recentWords  = recentWord[recentWord.length-1];
+                      x -= _context.measureText(recentWords).width;
+                      // Rwidth -= ctx.measureText(recentWords).width;
+                      recentWord.pop();
+                      }
+                }
+                
+              }else if(e.keyCode == 13||e.keyCode ==37||e.keyCode ==38||e.keyCode ==39||e.keyCode ==40||e.keyCode ==16){
+
+              }else{
+
+                _context.font = "30px Arial";
+                _context.fillStyle = "black";
+                if(snapshot2 == null){
+                    // resotreSnapShotCanvas2();
+                    _context.fillText(e.key,x,y);
+                    saveState();
+                    recentWord.push(e.key);
+                    clearInterval(interval);
+                    x += _context.measureText(e.key).width;
+                    blinkingcursor(x,y);
+                }else{
+                    resotreSnapShotCanvas2();
+                    _context.fillText(e.key,x,y);
+                    saveState();
+                    recentWord.push(e.key);
+                    clearInterval(interval);
+                    x += _context.measureText(e.key).width;
+                    takeSnapShotCanvas2();
+                    blinkingcursor(x,y);
+                }
+
+              }
+
+
+
+
+            
+        }
+        
+        
+
+
+    }
+    function saveState(){
+        UndoList.push(_canvas.toDataURL());
+      }
+
+
+    function undo() {
+        UndoList.pop();
+      
+        var imgData = UndoList[UndoList.length-1];
+        var image = new Image();
+        image.src = imgData;
+        image.onload  = function() {
+          _context.clearRect(0,0,_canvas.width,_canvas.height);
+          _context.drawImage(image, 0,0,_canvas.width,_canvas.height,0,0,_canvas.width,_canvas.height);
+        }
+
+    }
+
+    
+function blinkingcursor(MouseX,MouseY){
+    _context.font = "30px Arial";
+    _context.fillStyle = "black";
+    // _context.fillText("Hello World",MouseX,MouseY);
+    if(snapshot2 != null){
+      resotreSnapShotCanvas2();
+      _context.fillText("|",MouseX,MouseY);
+      cursor = false;
+    }
+   
+  
+    interval =  setInterval(() => {
+      if(cursor) {
+        takeSnapShotCanvas2();
+        _context.fillText("|",MouseX,MouseY);
+        cursor = false;
+      }else {
+        if(snapshot2 != null){
+          resotreSnapShotCanvas2();
+        }
+        cursor = true;
+      }
+  }, 500);
+  
+  
+  }
+
+
 
 
     function drawRec(mousePos,drag){
@@ -776,7 +1454,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                     if(!lineWidth){
                         lineWidth=1;
                     }
-                    points.push({x:mouseX,y:mouseY,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth})
+                    points.push({x:mouseX,y:mouseY,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:lowx-30,ly:lowy-30,hx:highx+10,hy:highy+10,text:null})
                 }
                 if(type == "0"){
                     resotreSnapShotCanvas();
@@ -785,44 +1463,116 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
             case 'straight':
                 resotreSnapShotCanvas();
                 if(type == "1"){
-                    points.push({x:dragingstrtLoc.x,y:dragingstrtLoc.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth})
-                    points.push({x:position.x,y:position.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth})
+                    points.push({x:dragingstrtLoc.x,y:dragingstrtLoc.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:lowx-30,ly:lowy-30,hx:highx+10,hy:highy+10,text:null})
+                    points.push({x:position.x,y:position.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:lowx-30,ly:lowy-30,hx:highx+10,hy:highy+10,text:null})
                     drawLine(position,dragingstrtLoc)
                 }
                 break;
             case "elipse":
                 resotreSnapShotCanvas();
                 if(type == "1"){
-                    points.push({x:dragingstrtLoc.x,y:dragingstrtLoc.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth})
-                    points.push({x:position.x,y:position.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth})
+                    points.push({x:dragingstrtLoc.x,y:dragingstrtLoc.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:lowx-30,ly:lowy-30,hx:highx+10,hy:highy+10,text:null})
+                    points.push({x:position.x,y:position.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:lowx-30,ly:lowy-30,hx:highx+10,hy:highy+10,text:null})
                     drawCircle(position,dragingstrtLoc);
                 }
                 break;
             case "rec":
                 resotreSnapShotCanvas();
                 if(type == "1"){
-                    points.push({x:dragingstrtLoc.x,y:dragingstrtLoc.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth})
-                    points.push({x:position.x,y:position.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth})
+                    points.push({x:dragingstrtLoc.x,y:dragingstrtLoc.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:lowx-30,ly:lowy-30,hx:highx+10,hy:highy+10,text:null})
+                    points.push({x:position.x,y:position.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:lowx-30,ly:lowy-30,hx:highx+10,hy:highy+10,text:null})
                     drawRec(position,dragingstrtLoc);
                 }
                 break;
+            case "triangle":
+                resotreSnapShotCanvas();
+                if(type == "1"){
+                    var w =Math.abs(lowx-highx);
+                    points.push({x:dragingstrtLoc.x,y:dragingstrtLoc.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:(lowx-w)-30,ly:lowy-30,hx:highx+10,hy:highy+10,text:null})
+                    points.push({x:position.x,y:position.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:(lowx-w)-30,ly:lowy-30,hx:highx+10,hy:highy+10,text:null})
+                    drawTriangle(position,dragingstrtLoc);
+                }
+                break;
+            case "rohmbus":
+                resotreSnapShotCanvas();
+                if(type == "1"){
+                    var w =Math.abs(lowx-highx);
+                    points.push({x:dragingstrtLoc.x,y:dragingstrtLoc.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:(lowx-w)-30,ly:lowy-30,hx:highx+10,hy:highy+10,text:null})
+                    points.push({x:position.x,y:position.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:(lowx-w)-30,ly:lowy-30,hx:highx+10,hy:highy+10,text:null})
+                    drawRohmbus(position,dragingstrtLoc);
+                }
+                break;
+            case "arrow":
+                resotreSnapShotCanvas();
+                if(type == "1"){
+                    points.push({x:dragingstrtLoc.x,y:dragingstrtLoc.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:lowx-35,ly:lowy-35,hx:highx+15,hy:highy+15,text:null})
+                    points.push({x:position.x,y:position.y,z:tool,w:_canvas.clientWidth,h:_canvas.clientHeight,lw:lineWidth,lx:lowx-35,ly:lowy-35,hx:highx+15,hy:highy+15,text:null})
+                    drawArrow(position,dragingstrtLoc);
+                }
+                break;
+            case "drag":    
+                // resotreSnapShotCanvas();
+                if(clicked){
+                    pathsry.push(secPath);
+                    clicked = false
+                    Redraw(currentPage-1)
+                }else{
+                    strtDrag = false;
+                    if(tempPoints.length != 0 ){
+                    console.log(tempPoints);
+                    pathsry.push(tempPoints);
+                    // socket.emit('moved',selectedItem,tempPoints,Roomname,pagecount);
+                    // ctx.beginPath();
+                    // ctx.rect(tempPoints[tempPoints.length-1].lx,tempPoints[tempPoints.length-1].ly,tempPoints[tempPoints.length-1].hx-tempPoints[tempPoints.length-1].lx,tempPoints[tempPoints.length-1].hy-tempPoints[tempPoints.length-1].ly);
+                    // ctx.stroke();
+                    }
+                    if(type == "1"){
+                    const postListRef = ref(db, '/pages'+'/'+roomName+'/'+(previousPage-1));
+                    set(postListRef,pathsry);
+                    }
+                    // set(postListRef,pathsry )
+                    tempPoints = [];
+                    console.log(pathsry);
+                    lowx =0;
+                    lowy = 0;
+                    highy = 0;
+                    highx =0;
+                    points = [];
+                }
+                break;
+            case "eraser":
+               
+                break;
+            
 
             
         }
         if(type == "1"){
             if(points.length != 0 ){
+                console.log("hey")
                 pathsry.push(points);
                 console.log(points);
-
-    
                 //updating new drawings on firebase
                 const postListRef = ref(db, '/pages'+'/'+roomName+'/'+(previousPage-1));
                 // const newPostRef = push(postListRef);
+                console.log("manoj");
+                console.log(pathsry)
                 set(postListRef,pathsry );
+                
                 // set(newPostRef, pages[previousPage-1]);
               }
               points = [];
         }
+
+
+
+        // _context.beginPath();
+        // _context.rect(lowx,lowy,highx-lowx,highy-lowy);
+        // _context.stroke();
+        lowx = 0;
+        lowy = 0;
+        highx = 0;
+        highy = 0;
         
        
         
@@ -831,6 +1581,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
 
     function _attachEventListeners() {
         var lastMove = null;
+        
         var onCanvasMouseDown = function(event) {
                 if(type=="1"){
                 var canvasOffset = _offset(_canvas);
@@ -846,6 +1597,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
                 var canvasOffset = _offset(_canvas);  
                 _stroke(event.pageX - canvasOffset.left, event.pageY  - canvasOffset.top);
                 }
+                
             },
             onCanvasMouseUp = function(event) {
                 console.log(event.pageX);
@@ -1021,7 +1773,20 @@ function drawCircle(mousePos,drag){
   _context.stroke();
   }
 
-
+  function drawAround(factx,facty){
+    var drag = {x:(llx)-factx,y:(lly)-facty}; 
+    var mousePos = {x:(hhx)-factx,y:(hhy)-facty};
+    var w = _canvas.clientWidth;
+    var h = _canvas.clientHeight;
+    _context.lineWidth = "2";
+    _context.beginPath();
+    _context.setLineDash([5, 15]);
+    _context.rect(drag.x,drag.y,Math.abs(hhx-llx),Math.abs(hhy-lly));   
+    _context.stroke();
+    _context.setLineDash([]);
+    _context.lineWidth = lineWidth;
+    
+  }
 
   function drawLine(mousePos,dragingstrtLoc){
     var w = _canvas.clientWidth;
@@ -1047,6 +1812,29 @@ function drawCircle(mousePos,drag){
       _context.lineTo((dragingstrtLoc.x*w)/dragingstrtLoc.w,(dragingstrtLoc.y*h)/dragingstrtLoc.h);
       _context.stroke();
 
+  }
+  function drawArrow(mousePos,dragingstrtLoc){
+
+    var w = _canvas.clientWidth;
+    var h = _canvas.clientHeight;
+    var halfx = mousePos.x-dragingstrtLoc.x;
+    var halfy = mousePos.y-dragingstrtLoc.y;
+    var othry = dragingstrtLoc.y-(((mousePos.y*h)/mousePos.h)-(((halfy)*h)/mousePos.h)/2);
+    var halfpoint =(((mousePos.x)*w)/mousePos.w)-(((halfx)*w)/mousePos.w)/2;
+    var othrx = halfpoint-((dragingstrtLoc.x*w)/dragingstrtLoc.w)
+
+
+    var headlen = 10; // length of head in pixels
+    var dx = mousePos.x - dragingstrtLoc.x;
+    var dy = mousePos.y - dragingstrtLoc.y;
+    var angle = Math.atan2(dy, dx);
+    _context.beginPath();
+    _context.moveTo((dragingstrtLoc.x*w)/dragingstrtLoc.w,((dragingstrtLoc.y*h)/dragingstrtLoc.h));
+    _context.lineTo((mousePos.x*w)/mousePos.w,(mousePos.y*h)/mousePos.h);
+    _context.lineTo(((mousePos.x*w)/mousePos.w) - headlen * Math.cos(angle - Math.PI / 6), ((mousePos.y*h)/mousePos.h) - headlen * Math.sin(angle - Math.PI / 6));
+    _context.moveTo(((mousePos.x*w)/mousePos.w), ((mousePos.y*h)/mousePos.h));
+    _context.lineTo(((mousePos.x*w)/mousePos.w) - headlen * Math.cos(angle + Math.PI / 6), ((mousePos.y*h)/mousePos.h) - headlen * Math.sin(angle + Math.PI / 6));
+    _context.stroke();
   }
 
   function drawRohmbus(mousePos,dragingstrtLoc){
@@ -1100,6 +1888,8 @@ function drawCircle(mousePos,drag){
     }
     
   }
+
+
 
 
   function getdrawings() {

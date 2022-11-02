@@ -1,0 +1,25 @@
+.progress {
+    width: 300px;
+    position: fixed;
+    display: flex;
+    bottom: 6%;
+    right: 23.5%;
+    margin-top: -175px;
+    border-radius: 4px;
+    background-color: white;
+    /* padding-bottom: 4px;
+    padding-top: 4px; */
+    box-shadow: 0 8px 24px 0 rgb(0 0 0 / 10%);
+    
+
+}
+
+.sec {
+    display: flex;
+    gap: 22px;
+}
+
+.secc {
+    display: flex;
+}
+

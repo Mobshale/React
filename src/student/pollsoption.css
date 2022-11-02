@@ -1,0 +1,38 @@
+.prag {
+    width: 76%;
+    height: 45%;
+    position:fixed;
+    display: flex;
+    bottom: 2%;
+    right: 23.5%;
+    margin-top: -175px;
+    border-radius: 4px;
+    background-color: white;
+    /* padding-bottom: 4px;
+    padding-top: 4px; */
+    box-shadow: 0 8px 24px 0 rgb(0 0 0 / 10%);
+
+}
+
+
+
+
+.se {
+    width: 95%;
+    height: 33%;
+    top: 30%;
+    position: absolute;
+    display: flex;
+    gap: 22px;
+    padding: 20px;
+}
+
+.sem {
+    width: 95%;
+    height: 33%;
+    top: 60%;
+    position: absolute;
+    display: flex;
+    gap: 22px;
+    padding: 20px;
+}

@@ -5,6 +5,8 @@ import Header from "../whiteboard/header";
 import Video from "../whiteboard/video";
 import Chat from "../whiteboard/Chat";
 import Pag from "../whiteboard/pagination";
+import Polls from "../whiteboard/polls";
+import PollProgress from "../whiteboard/pollprogress";
 import Uploadppt  from "../whiteboard/upload";
 import MyProvider from "../whiteboard/MyProvider";
 import { async } from "@firebase/util";
@@ -12,6 +14,8 @@ import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import PropagateLoader from "react-spinners/PropagateLoader";
 import "./teacher.css"
+import { Button, Modal } from 'antd';
+import "antd/dist/antd.css";
 import { css } from "@emotion/react";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "../main/firebaseCon";
@@ -367,16 +371,20 @@ leaveSession() {
   return (
    <div>
      <MyProvider>
+        
          <div  id='preload' class="preload">
           <PropagateLoader class="loader" color={"#010529"} loading={preloader}  css={override} size={20} />
         </div>
         <Header></Header>
         <Video childToParent={(v) =>this.childToParent(v)} ></Video>
         <Chat   userName={userN} roomName={roomN}></Chat>
+        <Polls></Polls>
+        <PollProgress></PollProgress>
         <Pag></Pag>
         <Uploadppt  roomName={roomN}></Uploadppt>
         <Toolbox></Toolbox>
         <Canvaboard message="pen" roomName={roomN} type="1"></Canvaboard>
+        
      </MyProvider>
      
    </div>
