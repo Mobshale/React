@@ -1,20 +1,17 @@
 .messageBox2 {
-    background: #DCDCDC;
     border-radius: 3px;
-    padding: 5px 20px;
-    color: white;
-    justify-content:center;
-    align-items: center;
-    display: inline-block;
+    padding: 8px 20px;
+    padding-bottom: 0px;
+    background: #6211C8;
     width: 100%;
+    margin-top: 3px;
+
   }
   
   .messageText2 {
     width: 100%;
-    left: 0;
-    right: 0;
-    letter-spacing: 0;
-    font-size: 0.8em;
+    text-align: left;
+    font-size: 1em;
     word-wrap: break-word;
   }
   
@@ -22,26 +19,21 @@
   .messageContainer2 {
     display: flex;
     justify-content: flex-end;
-    padding: 0 5%;
-    margin-top: 3px;
+    padding: 0.5% 5%;
   }
   
   
   
   
   
-  .justifyEnd2 {
-    justify-content: flex-end;
-  }
+ 
   
   .colorWhite2 {
-    color: black;
+    color: white;
   }
   
   
   
-  .backgroundBlue2 {
-    background: #1ecbe1;
-  }
+  
   
   

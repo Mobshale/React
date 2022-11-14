@@ -6,6 +6,9 @@ import ListMessage from "./ListMessages";
 import { getDatabase, ref, push, set ,onDisconnect } from "firebase/database";
 import {  onChildAdded, onChildChanged, onChildRemoved } from "firebase/database";
 import MembersList from './Members';
+import { Segmented  } from 'antd';
+import 'antd/dist/antd.css';
+import { FormInstance } from 'antd/lib/form';
 
 
 
@@ -15,17 +18,24 @@ var messages = [];
 var userName;
 var roomName;
 var names = [];
+var inutValue =""
+
+
+
 
 
 class Chat extends React.Component {
  
+
+
   constructor(props){
     super(props)
     userName = props.userName;
     roomName = props.roomName;
 
 
-    
+    this.formRef = React.createRef();
+
     this.state = {
       ChatUpdate : "no",
       isChat: true
@@ -62,7 +72,9 @@ class Chat extends React.Component {
 
     const memRef = ref(db, 'members/' + roomName);
     onChildAdded(memRef, (data) => {
-      names.push(data.val().uname);
+      if(!names.includes(data.val().uname)){
+        names.push(data.val().uname);
+      }
       this.setState({
         ChatUpdate: "update"
       })
@@ -82,19 +94,29 @@ class Chat extends React.Component {
 
   }
 
-  cha = () => {
-    this.setState({isChat: true})
+  cha = (str) => {
+    console.log(str)
+    switch(str){
+      case "Chat":
+        this.setState({isChat: true})
+        break;
+      case "Members":
+        this.setState({isChat: false})
+        break;
+    }
+   
   }
 
-  chga = () => {
-    this.setState({isChat: false})
-  }
+  
 
  
   
   send = () =>{
-    const value = document.getElementById('text').value;
-    
+
+    const value=  document.getElementById('text').value;
+    console.log(this.formRef.current.resetFields());
+
+
     console.log(value);
 
     if(value!=""){
@@ -105,7 +127,11 @@ class Chat extends React.Component {
 
       }
       messages.push(data);
-      document.getElementById('text').value = "";
+      // form.resetFields();
+
+      console.log("resetting")
+      
+      // document.getElementById('text').value = " jkih";
       const db = getDatabase();
       const postListRef = ref(db, 'chats/'+roomName);
       const newPostRef = push(postListRef);
@@ -131,37 +157,44 @@ class Chat extends React.Component {
     
   return (
    <div class="chat">
+    
       <div class="chatbar">
-           <Button class="chatbtn" onClick={this.cha} block>Chat</Button>
-           <Button class="membtn" onClick={this.chga} block >Members</Button>
+      
+        <Segmented block  options={["Chat", "Members"]} onChange={str=> this.cha(str) }></Segmented>
+        
+           {/* <Button class="chatbtn" onClick={this.cha} block>Chat</Button>
+           <Button class="membtn" onClick={this.chga} block >Members</Button> */}
        </div>
        
-       {this.state.isChat ? (
-         <ListMessage   messages={messages}  id={"1"}></ListMessage>
-         ) : (
-          <MembersList names={names} ></MembersList>
-        )} 
+       <div class="listofdata">
+          {this.state.isChat ? (
+            <ListMessage   messages={messages}  id={"1"}></ListMessage>
+            ) : (
+              <MembersList names={names} ></MembersList>
+            )} 
+       </div>
+       
+          <div class="txting">
+                  {this.state.isChat ? (
+              <div class='textbox'>
 
-        {this.state.isChat ? (
-           <div class='textbox'>
+              
+                <Form  ref={this.formRef}>
+                        <Form.Item name="textField"  rules={[{ required: true }]}>
+                        <Input.Group compact>
+                      <Input id='text' style={{  width: 'calc(100% - 80px)' }} onPressEnter={this.send} />
+                      <Button  onClick={this.send} style={{width:"80px"}} type="primary">Send</Button>
+                        </Input.Group>
+                        </Form.Item>
+                </Form>
+                
+                </div>
+                  ) : (
+                    <div></div>
+                  )}      
+           </div>
 
-            <div className="form">
-                <input id={'text'}
-                className="input"
-                type="text"
-                style={{width:"280px", height:"100%"}}
-                placeholder="Type a message..."
-                onKeyPress={(event) => event.key === 'Enter' ?  this.send() : null}
-                  ></input>
-                  <button className="sendButton" onClick={this.send}>Send</button>
-
-                {/* <Button type="primary" class="send" onClick={this.send} style= {{height:"100%"}}>Send</Button> */}
-              </div>
-            
-            </div>
-         ) : (
-           <div></div>
-        )}      
+          
       
    </div>
 

@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { Table,Pagination, Tooltip } from 'antd';
 import "./pag.css"
-import { PlusSquareFilled, PlusSquareTwoTone   } from '@ant-design/icons';
 import { MContext } from './MyProvider';
 import bac from './image/bac.svg';
 import far from './image/for.svg';

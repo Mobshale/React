@@ -378,8 +378,8 @@ leaveSession() {
         <Header></Header>
         <Video childToParent={(v) =>this.childToParent(v)} ></Video>
         <Chat   userName={userN} roomName={roomN}></Chat>
-        <Polls></Polls>
-        <PollProgress></PollProgress>
+        <Polls roomName={roomN}></Polls>
+        <PollProgress  roomName={roomN}></PollProgress>
         <Pag></Pag>
         <Uploadppt  roomName={roomN}></Uploadppt>
         <Toolbox></Toolbox>

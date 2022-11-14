@@ -13,6 +13,7 @@ import Pollsoption from "./Pollsotion";
 
 
 
+
 var roomN
 var userN
 var reren =0;
@@ -300,7 +301,7 @@ leaveSession() {
        
         <Video childToParent={(v) =>this.childToParent(v)} ></Video>
         <Chat  userName={userN}  roomName={roomN}></Chat>
-        <Pollsoption></Pollsoption>
+        <Pollsoption roomName={roomN}></Pollsoption>
         <Canvaboard message="none" roomName={roomN} type="0"> </Canvaboard>
         
         

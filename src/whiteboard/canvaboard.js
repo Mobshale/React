@@ -79,6 +79,8 @@ class Canvaboard extends React.Component {
           case "new":
             realisticPen.setNewPage();
             break;
+          case "pollprogress":
+              break;
           default:
             tool= tol;
             attach();

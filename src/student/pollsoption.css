@@ -15,24 +15,38 @@
 }
 
 
+.result{
+    /* min-height: 80px; */
+    left: 0;
+    right: 0;
+    top: 10%;
+    position: absolute;
+    display:block;
+    gap: 20px;
+    padding: 20px;
+}
+
+
 
 
 .se {
     width: 95%;
+    min-height: 80px;
     height: 33%;
-    top: 30%;
+    top: 25%;
     position: absolute;
     display: flex;
-    gap: 22px;
+    gap: 20px;
     padding: 20px;
 }
 
 .sem {
     width: 95%;
+    min-height: 80px;
     height: 33%;
     top: 60%;
     position: absolute;
     display: flex;
-    gap: 22px;
+    gap: 20px;
     padding: 20px;
 }

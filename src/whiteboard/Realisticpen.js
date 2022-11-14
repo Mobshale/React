@@ -179,7 +179,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
 
       if(type == "1"){
         onValue(ref(db, '/pages'+'/'+roomName), (snapshot) => {
-            console.log("firbase updated")
+            // console.log("firbase updated")
             var pstry;
             pstry = snapshot.val();
             if(pstry!= null){
@@ -204,7 +204,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
    
       if(type == "0"){
         onValue(ref(db, '/' + roomName+"live" ), (snap) => {
-            console.log(snapshot);
+            // console.log(snapshot);
             if(clearedforstudent){
                 snapshot= null;
                 clearedforstudent = false;

@@ -5,7 +5,7 @@ import ScrollToBottom from 'react-scroll-to-bottom';
 import './Members.css'
 
 
-const ListMessage = (props) => {
+const MemberList = (props) => {
     const names = props.names;
 
 
@@ -17,4 +17,4 @@ const ListMessage = (props) => {
 
 }
 
-export default(ListMessage)
+export default(MemberList)

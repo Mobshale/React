@@ -6,6 +6,7 @@
     right: 34%;
     margin-top: -175px;
     border-radius: 4px;
+    z-index: 5;
     background-color: white;
     /* padding-bottom: 4px;
     padding-top: 4px; */
@@ -22,4 +23,15 @@
 .sec {
     display: flex;
     gap: 22px;
+}
+
+
+.alert {
+    position: fixed;
+    max-width: 310px;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    margin: auto;
+    
 }
