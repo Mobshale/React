@@ -21,8 +21,8 @@ var sub;
 
 
 
-const OPENVIDU_SERVER_URL = 'https://' + "video.mobshale.com" + '';
-const OPENVIDU_SERVER_SECRET = 'manuvini';
+const OPENVIDU_SERVER_URL = 'https://' + "class.mobshale.com" + '';
+const OPENVIDU_SERVER_SECRET = 'manu';
 
 class Student extends React.Component {
 

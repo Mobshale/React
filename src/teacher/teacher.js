@@ -39,8 +39,8 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 
-const OPENVIDU_SERVER_URL = 'https://' + "video.mobshale.com" + '';
-const OPENVIDU_SERVER_SECRET = 'manuvini';
+const OPENVIDU_SERVER_URL = 'https://' + "class.mobshale.com" + '';
+const OPENVIDU_SERVER_SECRET = 'manu';
 
 
 
