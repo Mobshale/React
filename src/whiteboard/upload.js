@@ -11,8 +11,8 @@ import { getDatabase, ref, push, set ,onDisconnect } from "firebase/database";
 
 
 
-// var uploadURI = 'https://upload.mobshale.com:8080/uploadppt';
-var uploadURI = 'https://54.173.234.24:8080/uploadppt';
+var uploadURI = 'https://upload.mobshale.com:8080/uploadppt';
+// var uploadURI = 'https://54.173.234.24:8080/uploadppt';
 
 var roomName;
 
