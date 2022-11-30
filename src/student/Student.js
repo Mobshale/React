@@ -10,6 +10,11 @@ import { OpenVidu } from 'openvidu-browser';
 import PropagateLoader from "react-spinners/PropagateLoader";
 import { css } from "@emotion/react";
 import Pollsoption from "./Pollsotion";
+import SharingScreen from "./SharingScreen";
+import { deleteApp, initializeApp } from "firebase/app";
+import { firebaseConfig } from "../main/firebaseCon";
+import { getDatabase, ref, set,onValue,push, remove, get, child,update } from "firebase/database";
+
 
 
 
@@ -87,6 +92,26 @@ class Student extends React.Component {
         })
       }, 5000)
     }
+
+
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+
+    const pptRef = ref(db, '/' + roomN+"/ss");
+    onValue(pptRef, (snapshot) => {
+        var tab = document.getElementById("sharescreen-stu")
+        if(snapshot.val()==1){
+            tab.style.visibility = "visible" ;
+
+        }else if(snapshot.val()==0){
+            tab.style.visibility = "hidden" ;
+
+        }
+    });
+
+
 
 
     
@@ -296,9 +321,9 @@ leaveSession() {
           <div  id='preload' class="preload">
           <PropagateLoader class="loader" color={"#010529"} loading={preloader}  css={override} size={20} />
         </div>
-        <Header></Header>
-      
-       
+        <Header   teacher={0} roomName={roomN}></Header>
+        <SharingScreen roomName={roomN} style={{visbility: "hidden"}}>
+        </SharingScreen>
         <Video childToParent={(v) =>this.childToParent(v)} ></Video>
         <Chat  userName={userN}  roomName={roomN}></Chat>
         <Pollsoption roomName={roomN}></Pollsoption>

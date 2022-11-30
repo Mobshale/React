@@ -402,6 +402,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName,type) {
         drawimage();
         pathsry = [];
         
+    
     }
     
 
@@ -1872,7 +1873,8 @@ function drawCircle(mousePos,drag){
             y: 0,
             s: s,
             p: previousPage,
-            c: currentPage
+            c: currentPage,
+            ss: 0
             
           });
     }else{
@@ -1882,7 +1884,8 @@ function drawCircle(mousePos,drag){
             y: y,
             s: s,
             p: previousPage,
-            c: currentPage
+            c: currentPage,
+            ss: 0
 
           });
     }

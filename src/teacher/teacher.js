@@ -22,6 +22,7 @@ import { firebaseConfig } from "../main/firebaseCon";
 import { getDatabase, ref, set,onValue,push, remove, get, child, update } from "firebase/database";
 import { Redirect } from "react-router-dom";
 import { onDisconnect } from "firebase/database";
+import ShareScreen from "./ShareScreen";
 
 
 
@@ -375,11 +376,12 @@ leaveSession() {
          <div  id='preload' class="preload">
           <PropagateLoader class="loader" color={"#010529"} loading={preloader}  css={override} size={20} />
         </div>
-        <Header></Header>
+        <Header teacher={1} roomName={roomN} ></Header>
         <Video childToParent={(v) =>this.childToParent(v)} ></Video>
         <Chat   userName={userN} roomName={roomN}></Chat>
         <Polls roomName={roomN}></Polls>
         <PollProgress  roomName={roomN}></PollProgress>
+        <ShareScreen  roomName={roomN}></ShareScreen>
         <Pag></Pag>
         <Uploadppt  roomName={roomN}></Uploadppt>
         <Toolbox></Toolbox>

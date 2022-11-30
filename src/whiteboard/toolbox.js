@@ -3,7 +3,7 @@ import './toolbox.css'
 import {Popover, Tooltip } from 'antd';
 import 'antd/dist/antd.css';
 import selector from "./image/selector.svg";
-import  selectorActive from "./image/selector-active.svg";
+import selectorActive from "./image/selector-active.svg";
 import pen from "./image/pencil.svg";
 import penActive from "./image/pencil-active.svg";
 import text from "./image/text.svg";
