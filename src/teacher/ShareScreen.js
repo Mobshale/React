@@ -11,7 +11,7 @@ import axios from 'axios';
 
 
 
-var app,db;
+var app,db,OV,session,mySession;
 var once = false;
 
 const OPENVIDU_SERVER_URL = 'https://' + "class.mobshale.com" + '';
@@ -25,7 +25,7 @@ function ShareScreen(props){
     db = getDatabase(app);
 
 
-    const [visible, setVisible] = useState(true);
+    const [visible, setVisible] = useState(false);
     const [mySessionId, setSessionId] = useState(roomName+"screen");
     const [myuserName, setmyUserName] = useState('Participant' + Math.floor(Math.random() * 100));
     // const [session, setsession] = useState(undefined);
@@ -34,13 +34,16 @@ function ShareScreen(props){
     const [subscribers,setSubscribers] = useState([]);
     
 
-    var OV = new OpenVidu();
-    var session = OV.initSession();
-
-
-    var mySession = session;
+    
 
     useEffect(() =>{
+
+
+     OV = new OpenVidu();
+     session = OV.initSession();
+
+
+     mySession = session;
 
         
     
@@ -217,7 +220,7 @@ function ShareScreen(props){
             let tracks = videoElem.srcObject.getTracks();
             tracks.forEach(track => track.stop());
             videoElem.srcObject = null;
-            setVisible(!visible)
+            // setVisible(false)
         }
         setVisible(!visible)
 
@@ -230,12 +233,12 @@ function ShareScreen(props){
                 once = false
             }
 
-            // // Empty all properties...
-            // OV = null;
-            // session = undefined
-            // setSubscribers([])
-            // setPublisher(undefined)
-            // setmainStreamManager(undefined)
+            // Empty all properties...
+            OV = null;
+            session = undefined
+            setSubscribers([])
+            setPublisher(undefined)
+            setmainStreamManager(undefined)
                 
          
 
