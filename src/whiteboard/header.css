@@ -25,12 +25,23 @@
 .sharescreen-btn{
     display: flex;
     position: absolute;
-    right: 23%;
+    right: 26%;
     justify-content: center;
     width: 40px;
     align-items: center;
     top: 0;
     bottom: 0;
+}
+
+.sharelink-btn{
+  display: flex;
+  position: absolute;
+  right: 23%;
+  justify-content: center;
+  width: 40px;
+  align-items: center;
+  top: 0;
+  bottom: 0;
 }
 
 .draw-headerbox-box-cell :hover{

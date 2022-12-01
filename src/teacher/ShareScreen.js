@@ -183,7 +183,7 @@ function ShareScreen(props){
             
         
         }
-        var btn = document.getElementById("tool-headerbox-cell")
+        var btn = document.getElementById("tool-headerbox-cell-screen")
         btn.addEventListener("click", CalCal)
         
 
