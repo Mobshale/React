@@ -9,6 +9,7 @@ import {
 import Student from '../student/Student';
 import Teacher from '../teacher/teacher';
 import Main from './main';
+import SessionDetails from './Session';
 
 
 function LoginLayout() {
@@ -17,6 +18,7 @@ function LoginLayout() {
   return (
     <div>
     <Switch>
+    <Route exact path="/Session" component={SessionDetails}></Route>
     <Route exact path="/sishya/:roomName/:userName/:cdoc/:sdoc" component={Student} />
     <Route exact path="/guru/:roomName/:userName/:cdoc/:sdoc" component={Teacher} />
     <Route exact path="/" component={Main} />
