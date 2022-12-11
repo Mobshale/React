@@ -41,7 +41,7 @@ class Header extends React.Component {
       redirect: false,
     };
 
-    sharelink = "https://web.mobshale.com/StudentLogin/" + roomName;
+    sharelink = "https://web.mobshale.com//Redirect/" + roomName;
     app = initializeApp(firebaseConfig);
     db = getDatabase(app);
   }
