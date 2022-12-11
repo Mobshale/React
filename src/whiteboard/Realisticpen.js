@@ -193,13 +193,21 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
         clearedforstudent = false;
       }
       var live = snap.val();
-      var w = _canvas.clientWidth;
-      var h = _canvas.clientHeight;
-      if (snapshot != null) {
-        resotreSnapShotCanvas();
+      if (live != null) {
+        if (_canvas != null) {
+          var w = _canvas.clientWidth;
+          var h = _canvas.clientHeight;
+          if (snapshot != null) {
+            resotreSnapShotCanvas();
+          }
+          takeSnapShotCanvas();
+          _context.drawImage(
+            image,
+            (live.x * w) / live.w,
+            (live.y * h) / live.h
+          );
+        }
       }
-      takeSnapShotCanvas();
-      _context.drawImage(image, (live.x * w) / live.w, (live.y * h) / live.h);
     });
 
     onValue(ref(db, "/pages" + "/" + roomName), (snapshot) => {
@@ -224,44 +232,46 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
     onValue(starCountRef, (snapshot) => {
       const data = snapshot.val();
       // console.log(data.tool)
-      var w = _canvas.clientWidth;
-      var h = _canvas.clientHeight;
-      if (data != null) {
-        tool = data.tool;
-        previousPage = data.p;
+      if (_canvas != null) {
+        var w = _canvas.clientWidth;
+        var h = _canvas.clientHeight;
+        if (data != null) {
+          tool = data.tool;
+          previousPage = data.p;
 
-        if (currentPage != data.c) {
-          currentPage = data.c;
-          drawimage();
-          pageChangeOn(currentPage);
-        }
-        switch (data.s) {
-          case 0:
-            wirtng = 0;
-            if (prev != null) {
-              _strokeEnd((data.x * w) / data.w, (data.y * h) / data.h);
-              // getdrawings();
-            }
-            break;
-          case 1:
-            if (wirtng == 0) {
-              _strokeStart((data.x * w) / data.w, (data.y * h) / data.h);
-              wirtng = 1;
-            } else {
-              _stroke((data.x * w) / data.w, (data.y * h) / data.h);
-            }
-            break;
-          case 2:
-            snapshot = null;
-            snapshot2 = null;
-            clearedforstudent = true;
-            _context.clearRect(0, 0, _canvas.width, _canvas.height);
-            _context.fillStyle = "#F3F6F9";
-            _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
+          if (currentPage != data.c) {
+            currentPage = data.c;
             drawimage();
-            break;
+            pageChangeOn(currentPage);
+          }
+          switch (data.s) {
+            case 0:
+              wirtng = 0;
+              if (prev != null) {
+                _strokeEnd((data.x * w) / data.w, (data.y * h) / data.h);
+                // getdrawings();
+              }
+              break;
+            case 1:
+              if (wirtng == 0) {
+                _strokeStart((data.x * w) / data.w, (data.y * h) / data.h);
+                wirtng = 1;
+              } else {
+                _stroke((data.x * w) / data.w, (data.y * h) / data.h);
+              }
+              break;
+            case 2:
+              snapshot = null;
+              snapshot2 = null;
+              clearedforstudent = true;
+              _context.clearRect(0, 0, _canvas.width, _canvas.height);
+              _context.fillStyle = "#F3F6F9";
+              _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
+              drawimage();
+              break;
+          }
+          prev = data;
         }
-        prev = data;
       }
     });
   }

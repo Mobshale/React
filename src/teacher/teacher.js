@@ -78,6 +78,14 @@ class Teacher extends React.Component {
       islive: 1,
     });
 
+    update(ref(db, "islive/" + roomName), {
+      islive: 1,
+    });
+
+    onDisconnect(ref(db, "islive/" + roomName)).update({
+      islive: 0,
+    });
+
     onDisconnect(postListRef).update({
       islive: 0,
     });
