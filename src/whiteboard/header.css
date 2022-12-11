@@ -1,39 +1,36 @@
-.header-tab{
-    width: 100%;
-    height: 40px;
-    display: flex;
-    position: relative;
-    box-shadow: 0 8px 24px 0 rgb(0 0 0 / 10%);
+.header-tab {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  position: relative;
+  box-shadow: 0 8px 24px 0 rgb(0 0 0 / 10%);
 }
 
-
-.right {
-    width: 50px;
-    height: 100%;
-    display: flex;
-    position: absolute;
-    right: 0;
-    
+.end-class-btn {
+  width: 50px;
+  height: 100%;
+  display: flex;
+  position: absolute;
+  right: 0;
 }
 
 .exitbtn {
-    width: 35px;
-    right: 0;
-
+  width: 35px;
+  right: 0;
 }
 
-.sharescreen-btn{
-    display: flex;
-    position: absolute;
-    right: 26%;
-    justify-content: center;
-    width: 40px;
-    align-items: center;
-    top: 0;
-    bottom: 0;
+.sharescreen-btn {
+  display: flex;
+  position: absolute;
+  right: 26%;
+  justify-content: center;
+  width: 40px;
+  align-items: center;
+  top: 0;
+  bottom: 0;
 }
 
-.sharelink-btn{
+.sharelink-btn {
   display: flex;
   position: absolute;
   right: 23%;
@@ -44,27 +41,26 @@
   bottom: 0;
 }
 
-.draw-headerbox-box-cell :hover{
-    background-color: #E8E9E9;
-  }
-  
-  
-  .draw-headerbox-box-cell {
-    width: 100%;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    user-select: none;
-  }
+.draw-headerbox-box-cell :hover {
+  background-color: #e8e9e9;
+}
 
-  .tool-headerbox-cell {
-    width: 35px;
-    height: 35px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    position: relative;
-  }
+.draw-headerbox-box-cell {
+  width: 100%;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tool-headerbox-cell {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
