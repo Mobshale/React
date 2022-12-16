@@ -59,8 +59,11 @@ class Header extends React.Component {
     confirm({
       title: "Do you want to end the session",
       icon: <ExclamationCircleFilled />,
-      onOk: () => {
+      onOk: async () => {
         console.log("OK");
+        await update(ref(db, "/islive/" + roomName), {
+          islive: 2,
+        });
         this.setState({
           redirect: true,
         });

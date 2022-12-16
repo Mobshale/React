@@ -25,6 +25,7 @@ import {
   update,
 } from "firebase/database";
 import { Redirect } from "react-router-dom";
+import ClassEnded from "../main/ClassEnded";
 
 var roomN;
 var userN;
@@ -55,6 +56,7 @@ class Student extends React.Component {
       preloader: true,
       redirectTeacherOffline: false,
       redirectTeacherNot: false,
+      classEnded: false,
     };
 
     const isliveRef = ref(db, "/islive/" + roomN + "/islive");
@@ -70,9 +72,9 @@ class Student extends React.Component {
           this.setState({
             redirectTeacherNot: false,
           });
-        } else if (snapshot.val() == null) {
+        } else if (snapshot.val() == 2) {
           this.setState({
-            redirectTeacherNot: true,
+            classEnded: true,
           });
         }
       }
@@ -287,7 +289,8 @@ class Student extends React.Component {
   }
 
   render() {
-    const { redirectTeacherOffline, redirectTeacherNot } = this.state;
+    const { redirectTeacherOffline, redirectTeacherNot, classEnded } =
+      this.state;
 
     if (redirectTeacherOffline) {
       return (
@@ -305,6 +308,17 @@ class Student extends React.Component {
         <Redirect
           to={{
             pathname: "/WaitingRoom",
+            state: { roomName: roomN },
+          }}
+        />
+      );
+    }
+
+    if (classEnded) {
+      return (
+        <Redirect
+          to={{
+            pathname: "/ClassEnded",
             state: { roomName: roomN },
           }}
         />
