@@ -6,6 +6,7 @@ import logo from "../svg/logo.png";
 import download from "./download.png";
 import QRCode from "qrcode";
 import { initializeApp } from "firebase/app";
+import logomobile from "../img/logo/Flames-mob-logo.png";
 import { getAnalytics } from "firebase/analytics";
 import { firebaseConfig } from "../main/firebaseCon";
 import {
@@ -55,7 +56,9 @@ class Main extends React.Component {
 
     this.state = { redirect: null, success: false };
 
-    isMobile = window.innerWidth <= 760;
+    const userAgent = window.navigator.userAgent;
+    const mobileAgents = ["Android", "iPhone", "iPad", "iPod"];
+    isMobile = mobileAgents.some((agent) => userAgent.includes(agent));
 
     auth.onAuthStateChanged((us) => {
       if (us) {
@@ -175,15 +178,19 @@ class Main extends React.Component {
     return (
       <div class="body">
         {isMobile ? (
-          <div class="bb">
-            <img class="logo2" src={logo}></img>
-
-            <div class="bb2">
-              <img
-                class="download"
+          <div className="mobile-prompt">
+            <div className="mobile-prompt-content">
+              <img src={logomobile} alt="Mobile icon" />
+              <h1>Download Flames Mobile App</h1>
+              <p>
+                Experience the best of Flames on the go with our mobile app.
+              </p>
+              <a
                 href="https://play.google.com/store/apps/details?id=com.mobshale.app"
-                src={download}
-              ></img>
+                className="btn"
+              >
+                Download Now
+              </a>
             </div>
           </div>
         ) : (
