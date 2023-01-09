@@ -210,8 +210,8 @@ class Main extends React.Component {
 
               <Card className="mb-0">
                 <CardBody>
-                  <h1 className="title-mob">Mobshale</h1>
-                  <h3 class="welcome-txt">Welcome to Mobshale! 👋</h3>
+                  <h1 className="title-mob">Flames</h1>
+                  <h3 class="welcome-txt">Welcome to Flames! 👋</h3>
                   <p class="welcome-info">
                     Please sign-in to your account and start the adventure
                   </p>
@@ -246,7 +246,7 @@ class Main extends React.Component {
                   </div>
 
                   <p class="scan-text">
-                    Scan the QR code from mobshale app to login instantly!
+                    Scan the QR code from flames app to login instantly!
                   </p>
 
                   <div>

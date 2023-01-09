@@ -41,7 +41,7 @@ class Header extends React.Component {
       redirect: false,
     };
 
-    sharelink = "https://web.mobshale.com/Redirect/" + roomName;
+    sharelink = "https://flames.mobshale.com/Redirect/" + roomName;
     app = initializeApp(firebaseConfig);
     db = getDatabase(app);
   }
@@ -114,7 +114,7 @@ class Header extends React.Component {
             marginTop: "4px",
           }}
         >
-          mobshale{" "}
+          flames{" "}
         </Title>
 
         <div class="sharescreen-btn">
