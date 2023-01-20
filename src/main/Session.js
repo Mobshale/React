@@ -39,6 +39,7 @@ import { Redirect } from "react-router-dom";
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth();
+var sessionType = 0;
 var user;
 
 function Session(props) {
@@ -65,9 +66,19 @@ function Session(props) {
   const startClass = () => {
     var sessionName = document.getElementById("sessionName").value;
     if (sessionName) {
-      props.history.push(
-        "/guru/" + sessionName + "/" + user.displayName.trim() + "/cdox/sdoc"
-      );
+      if (sessionType == 1) {
+        props.history.push(
+          "/guru/one2one/" +
+            sessionName +
+            "/" +
+            user.displayName.trim() +
+            "/cdox/sdoc"
+        );
+      } else {
+        props.history.push(
+          "/guru/" + sessionName + "/" + user.displayName.trim() + "/cdox/sdoc"
+        );
+      }
     }
   };
 
@@ -89,7 +100,7 @@ function Session(props) {
 
         <Card className="-mb-0">
           <CardBody>
-            <h1 className="-title-mob">Mobshale</h1>
+            <h1 className="-title-mob">Flames</h1>
 
             <div class="inputBox">
               <input id="sessionName" type={"text"} required="required"></input>
@@ -108,6 +119,7 @@ function Session(props) {
                   ).style.border = "";
                   document.getElementById("pricing-tabs-premium").style.border =
                     "";
+                  sessionType = 1;
                 }}
               >
                 <h1>1 to 1</h1>
@@ -126,6 +138,7 @@ function Session(props) {
                   ).style.border = "3px solid #1890FF";
                   document.getElementById("pricing-tabs-premium").style.border =
                     "";
+                  sessionType = 0;
                 }}
               >
                 <h1>Upto 30</h1>
@@ -144,6 +157,7 @@ function Session(props) {
                   ).style.border = "";
                   document.getElementById("pricing-tabs-premium").style.border =
                     "3px solid #1890FF";
+                  sessionType = 0;
                 }}
               >
                 <h1>100+</h1>

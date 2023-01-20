@@ -28,7 +28,9 @@ import { Redirect } from "react-router-dom";
 
 const { confirm } = Modal;
 const { Title } = Typography;
-var roomName, type;
+var roomName,
+  type,
+  SessionType = 0;
 var app, db, sharelink;
 
 class Header extends React.Component {
@@ -36,12 +38,18 @@ class Header extends React.Component {
     super(props);
     roomName = props.roomName;
     type = props.teacher;
+    SessionType = props.SessionType;
 
     this.state = {
       redirect: false,
     };
+    if (SessionType == 1) {
+      sharelink =
+        "https://flames.mobshale.com/Redirect/" + roomName + "/one2one";
+    } else {
+      sharelink = "https://flames.mobshale.com/Redirect/" + roomName;
+    }
 
-    sharelink = "https://flames.mobshale.com/Redirect/" + roomName;
     app = initializeApp(firebaseConfig);
     db = getDatabase(app);
   }

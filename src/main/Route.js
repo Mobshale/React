@@ -12,6 +12,8 @@ import WaitingRoom from "./WaitingRoom";
 import TeacherLeft from "./TeacherLeft";
 import RedirectStudent from "./RedirectStudent";
 import StudentLogin from "./StudentLogin";
+import OnetoOneStudent from "../student/OnetooneStudent";
+import OnetoOneTeacher from "../teacher/OnetooneTeacher";
 
 function LoginLayout(props) {
   const history = useHistory();
@@ -27,12 +29,22 @@ function LoginLayout(props) {
         />
         <Route
           exact
+          path="/sishya/one2one/:roomName/:userName/:cdoc/:sdoc"
+          component={OnetoOneStudent}
+        />
+        <Route
+          exact
           path="/guru/:roomName/:userName/:cdoc/:sdoc"
           component={Teacher}
         />
         <Route
           exact
-          path="/Redirect/:roomName/"
+          path="/guru/one2one/:roomName/:userName/:cdoc/:sdoc"
+          component={OnetoOneTeacher}
+        />
+        <Route
+          exact
+          path="/Redirect/:roomName/:type"
           component={RedirectStudent}
         ></Route>
         <Route exact path="/StudentLogin" component={StudentLogin} />

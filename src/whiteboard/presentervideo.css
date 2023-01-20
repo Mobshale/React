@@ -1,0 +1,22 @@
+.presenter-box {
+  width: 13%;
+  height: 24%;
+  position: fixed;
+  display: block;
+  right: 23.5%;
+  z-index: 5;
+  top: 50px;
+  /* margin-top: -175px; */
+  border-radius: 4px;
+  background-color: white;
+  align-items: center;
+  flex-direction: column;
+  padding-bottom: 4px;
+  padding-top: 4px;
+  box-shadow: 0 8px 24px 0 rgb(0 0 0 / 10%);
+}
+
+.presentervideo {
+  width: 100%;
+  height: fit-content;
+}

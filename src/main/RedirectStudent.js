@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 
 function RedirectStudent(props) {
   const { roomName } = props.match.params;
+  const { type } = props.match.params;
 
   console.log(roomName);
   const history = useHistory();
@@ -11,6 +12,7 @@ function RedirectStudent(props) {
     pathname: "/StudentLogin",
     state: {
       roomname: roomName,
+      sessiontype: type,
     },
   });
 

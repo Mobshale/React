@@ -48,11 +48,12 @@ const auth = getAuth();
 
 function StudentLogin(props) {
   const roomname = props.location.state.roomname;
+  const sessiontype = props.location.state.sessiontype;
 
   const [success, setSuccess] = useState(false);
   const [redirect, setRedirect] = useState("");
 
-  console.log(roomname);
+  console.log(sessiontype);
 
   auth.onAuthStateChanged((us) => {
     if (us) {
@@ -61,9 +62,16 @@ function StudentLogin(props) {
       user = us;
       setTimeout(() => {
         // setSuccess(false);
-        props.history.push(
-          "/sishya/" + roomname + "/" + us.displayName + "/cdoc/sdoc"
-        );
+        if (sessiontype == "one2one") {
+          props.history.push(
+            "/sishya/one2one/" + roomname + "/" + us.displayName + "/cdoc/sdoc"
+          );
+        } else {
+          props.history.push(
+            "/sishya/" + roomname + "/" + us.displayName + "/cdoc/sdoc"
+          );
+        }
+
         // setRedirect("/Session");
       }, 1000);
       setSuccess(true);
@@ -86,9 +94,19 @@ function StudentLogin(props) {
           user = result.user;
           setTimeout(() => {
             setSuccess(false);
-            props.history.push(
-              "/sishya/" + roomname + "/" + user.displayName + "/cdoc/sdoc"
-            );
+            if (sessiontype == "one2one") {
+              props.history.push(
+                "/sishya/one2one/" +
+                  roomname +
+                  "/" +
+                  user.displayName +
+                  "/cdoc/sdoc"
+              );
+            } else {
+              props.history.push(
+                "/sishya/" + roomname + "/" + user.displayName + "/cdoc/sdoc"
+              );
+            }
           }, 1000);
           setSuccess(true);
           // ...
