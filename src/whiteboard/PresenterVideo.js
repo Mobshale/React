@@ -1,10 +1,18 @@
 import "../whiteboard/presentervideo.css";
 import React, { useRef, useState } from "react";
+import MyProvider from "../whiteboard/MyProvider";
+import MuteSvg from "../svg/mute.svg";
+import UnMuteSvg from "../svg/unmute.svg";
+import VideoOn from "../svg/videoon.svg";
+import VideoOff from "../svg/videooff.svg";
 
 function Presentervideo() {
   const pos = getXYPosition(36.5, 45);
   const [position, setPosition] = useState({ x: pos.x, y: pos.y });
   const videoRef = useRef(null);
+  const [micEnabled, setMicEnabled] = useState(true);
+  const [videoEnabled, setVideoEnabled] = useState(true);
+  const localVideoRef = useRef(null);
 
   const handleMouseDown = (event) => {
     const initialX = event.clientX - position.x;
@@ -28,6 +36,42 @@ function Presentervideo() {
     document.addEventListener("mouseup", handleMouseUp);
   };
 
+  const toggleAudio = () => {
+    const localVideo = localVideoRef.current;
+    if (micEnabled) {
+      localVideo.srcObject.getTracks().forEach((track) => {
+        if (track.kind === "audio") {
+          track.enabled = false;
+        }
+      });
+    } else {
+      localVideo.srcObject.getTracks().forEach((track) => {
+        if (track.kind === "audio") {
+          track.enabled = true;
+        }
+      });
+    }
+    setMicEnabled(!micEnabled);
+  };
+
+  const toggleVideo = () => {
+    const localVideo = localVideoRef.current;
+    if (videoEnabled) {
+      localVideo.srcObject.getTracks().forEach((track) => {
+        if (track.kind === "video") {
+          track.enabled = false;
+        }
+      });
+    } else {
+      localVideo.srcObject.getTracks().forEach((track) => {
+        if (track.kind === "video") {
+          track.enabled = true;
+        }
+      });
+    }
+    setVideoEnabled(!videoEnabled);
+  };
+
   return (
     <div
       className="presenter-box"
@@ -41,11 +85,14 @@ function Presentervideo() {
       }}
     >
       <video
+        ref={localVideoRef}
         className="presentervideo"
         autoPlay={true}
         playsInline
         id="presentervideo"
       ></video>
+      <img src={micEnabled ? MuteSvg : UnMuteSvg} onClick={toggleAudio}></img>
+      <img src={videoEnabled ? VideoOn : VideoOff} onClick={toggleVideo}></img>
     </div>
   );
 }
