@@ -33,6 +33,11 @@ var roomName,
   SessionType = 0;
 var app, db, sharelink;
 
+const d = new Date();
+const date = ("0" + d.getDate()).slice(-2);
+const month = ("0" + (d.getMonth() + 1)).slice(-2);
+const time = `${date}${month}${d.getFullYear()}`;
+
 class Header extends React.Component {
   constructor(props) {
     super(props);
@@ -56,7 +61,7 @@ class Header extends React.Component {
 
   async startCapture() {
     if (type == 1) {
-      const postRef = ref(db, "/" + roomName + "/ss");
+      const postRef = ref(db, time + "/" + roomName + "/ss");
       set(postRef, 1);
       var tab = document.getElementById("sharescreen");
       tab.style.visibility = "visible";
@@ -69,7 +74,7 @@ class Header extends React.Component {
       icon: <ExclamationCircleFilled />,
       onOk: async () => {
         console.log("OK");
-        await update(ref(db, "/islive/" + roomName), {
+        await update(ref(db, time + "/islive/" + roomName), {
           islive: 2,
         });
         this.setState({

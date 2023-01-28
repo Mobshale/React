@@ -33,8 +33,8 @@ function WaitingRoom(props) {
       "/sishya/" + roomName + "/" + auth.currentUser.displayName + "/sdoc/cdoc"
     );
   };
-
-  const isliveRef = ref(db, "/islive/" + roomName + "/islive");
+  const time = getCurrentTime();
+  const isliveRef = ref(db, "/" + time + "/islive/" + roomName + "/islive");
   onValue(isliveRef, (snapshot) => {
     if (snapshot.val() == 1) {
       GotoClass();
@@ -54,6 +54,13 @@ function WaitingRoom(props) {
       />
     </div>
   );
+}
+
+function getCurrentTime() {
+  const d = new Date();
+  const date = ("0" + d.getDate()).slice(-2);
+  const month = ("0" + (d.getMonth() + 1)).slice(-2);
+  return `${date}${month}${d.getFullYear()}`;
 }
 
 export default WaitingRoom;

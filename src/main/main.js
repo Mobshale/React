@@ -95,17 +95,7 @@ class Main extends React.Component {
       });
       fcode = qrcode.slice(0, 15);
 
-      const d = new Date();
-      var date = "" + d.getDate();
-      if (date.length === 1) {
-        date = "0" + date;
-      }
-      var month = "" + (d.getMonth() + 1);
-      if (month.length === 1) {
-        month = "0" + month;
-      }
-      var time = "" + date + month + d.getFullYear();
-      console.log(date);
+      const time = getCurrentTime();
 
       set(ref(db, "/" + time + "/" + fcode), {
         t: 0,
@@ -277,6 +267,13 @@ function makeid(length) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+}
+
+function getCurrentTime() {
+  const d = new Date();
+  const date = ("0" + d.getDate()).slice(-2);
+  const month = ("0" + (d.getMonth() + 1)).slice(-2);
+  return `${date}${month}${d.getFullYear()}`;
 }
 
 export default Main;

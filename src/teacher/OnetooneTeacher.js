@@ -40,6 +40,11 @@ var Cdoc;
 var Sdoc;
 var reren = 0;
 
+const d = new Date();
+const date = ("0" + d.getDate()).slice(-2);
+const month = ("0" + (d.getMonth() + 1)).slice(-2);
+const time = `${date}${month}${d.getFullYear()}`;
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
@@ -59,17 +64,6 @@ class Teacher extends React.Component {
     Cdoc = cdoc;
     Sdoc = sdoc;
 
-    const d = new Date();
-    var date = "" + d.getDate();
-    if (date.length === 1) {
-      date = "0" + date;
-    }
-    var month = "" + (d.getMonth() + 1);
-    if (month.length === 1) {
-      month = "0" + month;
-    }
-    var time = "" + date + month + d.getFullYear();
-
     const postListRef = ref(
       db,
       time + "/courses/" + Cdoc + "/schedule/" + Sdoc
@@ -79,11 +73,11 @@ class Teacher extends React.Component {
       islive: 1,
     });
 
-    update(ref(db, "islive/" + roomName), {
+    update(ref(db, time + "/islive/" + roomName), {
       islive: 1,
     });
 
-    onDisconnect(ref(db, "islive/" + roomName)).update({
+    onDisconnect(ref(db, time + "/islive/" + roomName)).update({
       islive: 0,
     });
 

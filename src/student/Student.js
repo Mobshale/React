@@ -32,6 +32,11 @@ var userN;
 var reren = 0;
 var sub;
 
+const d = new Date();
+const date = ("0" + d.getDate()).slice(-2);
+const month = ("0" + (d.getMonth() + 1)).slice(-2);
+const time = `${date}${month}${d.getFullYear()}`;
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
@@ -59,7 +64,7 @@ class Student extends React.Component {
       classEnded: false,
     };
 
-    const isliveRef = ref(db, "/islive/" + roomN + "/islive");
+    const isliveRef = ref(db, "/" + time + "/islive/" + roomN + "/islive");
     onValue(isliveRef, (snapshot) => {
       console.log(snapshot.val());
       if (snapshot) {
@@ -116,7 +121,7 @@ class Student extends React.Component {
       }, 5000);
     }
 
-    const pptRef = ref(db, "/" + roomN + "/ss");
+    const pptRef = ref(db, "/" + time + "/" + roomN + "/ss");
     onValue(pptRef, (snapshot) => {
       var tab = document.getElementById("sharescreen-stu");
       if (snapshot.val() == 1) {

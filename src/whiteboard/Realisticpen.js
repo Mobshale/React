@@ -38,6 +38,11 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   image.src = laser;
   image.onload = () => {};
 
+  const d = new Date();
+  const date = ("0" + d.getDate()).slice(-2);
+  const month = ("0" + (d.getMonth() + 1)).slice(-2);
+  const time = `${date}${month}${d.getFullYear()}`;
+
   document.addEventListener("keydown", (e) => textlistner(e));
 
   //writing
@@ -45,7 +50,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   var recentWord = [];
   var UndoList = [];
 
-  const pptRef = ref(db, "ppt/" + roomName);
+  const pptRef = ref(db, time + "/ppt/" + roomName);
   onValue(pptRef, (snapshot) => {
     snapshot.forEach((childSnapshot) => {
       pptlist.push(childSnapshot.val());
@@ -166,7 +171,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   // checking if the user is teacher or student teacher =1 , student =0
 
   if (type == "1") {
-    onValue(ref(db, "/pages" + "/" + roomName), (snapshot) => {
+    onValue(ref(db, time + "/pages" + "/" + roomName), (snapshot) => {
       // console.log("firbase updated")
       var pstry;
       pstry = snapshot.val();
@@ -186,7 +191,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   }
 
   if (type == "0") {
-    onValue(ref(db, "/" + roomName + "live"), (snap) => {
+    onValue(ref(db, time + "/" + roomName + "live"), (snap) => {
       // console.log(snapshot);
       if (clearedforstudent) {
         snapshot = null;
@@ -210,7 +215,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
       }
     });
 
-    onValue(ref(db, "/pages" + "/" + roomName), (snapshot) => {
+    onValue(ref(db, time + "/pages" + "/" + roomName), (snapshot) => {
       console.log("firbase updated");
       var pstry;
       pstry = snapshot.val();
@@ -228,7 +233,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
       }
     });
 
-    const starCountRef = ref(db, "/" + roomName);
+    const starCountRef = ref(db, time + "/" + roomName);
     onValue(starCountRef, (snapshot) => {
       const data = snapshot.val();
       // console.log(data.tool)
@@ -350,7 +355,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
     //deleting the page on server
     const postListRef = ref(
       db,
-      "/pages" + "/" + roomName + "/" + (previousPage - 1)
+      time + "/pages" + "/" + roomName + "/" + (previousPage - 1)
     );
     // const newPostRef = push(postListRef);
     remove(postListRef);
@@ -387,7 +392,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
         pages[previousPage - 1] = pathsry;
         const postListRef = ref(
           db,
-          "/pages" + "/" + roomName + "/" + (previousPage - 1)
+          time + "/pages" + "/" + roomName + "/" + (previousPage - 1)
         );
         // const newPostRef = push(postListRef);
         set(postListRef, pages[previousPage - 1]);
@@ -402,7 +407,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
         pages[previousPage - 1] = pathsry;
         const postListRef = ref(
           db,
-          "/pages" + "/" + roomName + "/" + (previousPage - 1)
+          time + "/pages" + "/" + roomName + "/" + (previousPage - 1)
         );
         // const newPostRef = push(postListRef);
         set(postListRef, pages[previousPage - 1]);
@@ -419,7 +424,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
       pages[previousPage - 1] = pathsry;
       const postListRef = ref(
         db,
-        "/pages" + "/" + roomName + "/" + (previousPage - 1)
+        time + "/pages" + "/" + roomName + "/" + (previousPage - 1)
       );
       // const newPostRef = push(postListRef);
       set(postListRef, pages[previousPage - 1]);
@@ -739,7 +744,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
           var w = _canvas.clientWidth;
           var h = _canvas.clientHeight;
 
-          set(ref(db, "/" + roomName + "live"), {
+          set(ref(db, time + "/" + roomName + "live"), {
             x: event.pageX - canvasOffset.left,
             y: event.pageY - canvasOffset.top,
             w: w,
@@ -1566,7 +1571,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
                 if (type == "1") {
                   const postListRef = ref(
                     db,
-                    "/pages" + "/" + roomName + "/" + (previousPage - 1)
+                    time + "/pages" + "/" + roomName + "/" + (previousPage - 1)
                   );
                   set(postListRef, pathsry);
                 }
@@ -1980,7 +1985,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
           if (type == "1") {
             const postListRef = ref(
               db,
-              "/pages" + "/" + roomName + "/" + (previousPage - 1)
+              time + "/pages" + "/" + roomName + "/" + (previousPage - 1)
             );
             set(postListRef, pathsry);
           }
@@ -2005,7 +2010,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
         //updating new drawings on firebase
         const postListRef = ref(
           db,
-          "/pages" + "/" + roomName + "/" + (previousPage - 1)
+          time + "/pages" + "/" + roomName + "/" + (previousPage - 1)
         );
         // const newPostRef = push(postListRef);
         console.log("manoj");
@@ -2377,7 +2382,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   function writeUserData(room, tool, x, y, s) {
     //   console.log(currentPage)
     if (s == 0) {
-      set(ref(db, "/" + room), {
+      set(ref(db, time + "/" + room), {
         tool: tool,
         x: 0,
         y: 0,
@@ -2387,7 +2392,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
         ss: 0,
       });
     } else {
-      set(ref(db, "/" + room), {
+      set(ref(db, time + "/" + room), {
         tool: tool,
         x: x,
         y: y,
@@ -2402,11 +2407,11 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   function getdrawings() {
     const postListRef = ref(
       db,
-      "/pages" + "/" + roomName + "/" + (previousPage - 1)
+      time + "/pages" + "/" + roomName + "/" + (previousPage - 1)
     );
 
     onValue(
-      ref(db, "/pages" + "/" + roomName),
+      ref(db, time + "/pages" + "/" + roomName),
       (snapshot) => {
         pages = snapshot.val();
         console.log(pages);
@@ -2530,7 +2535,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
     console.log(previousPage, " ", val);
     console.log("hey  ", pages);
     onValue(
-      ref(db, "/pages" + "/" + roomName),
+      ref(db, time + "/pages" + "/" + roomName),
       (snapshot) => {
         pages = snapshot.val();
         console.log(pages);
