@@ -52,7 +52,8 @@ class Header extends React.Component {
       sharelink =
         "https://flames.mobshale.com/Redirect/" + roomName + "/one2one";
     } else {
-      sharelink = "https://flames.mobshale.com/Redirect/" + roomName;
+      sharelink =
+        "https://flames.mobshale.com/Redirect/" + roomName + "/common";
     }
 
     app = initializeApp(firebaseConfig);
@@ -104,7 +105,7 @@ class Header extends React.Component {
             }}
             defaultValue={sharelink}
           />
-          <Tooltip title="copy git url">
+          <Tooltip title="copy session url">
             <Button
               onClick={() => {
                 navigator.clipboard.writeText(sharelink);

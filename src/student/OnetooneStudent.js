@@ -85,15 +85,21 @@ class Student extends React.Component {
       }
     });
 
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then(function (stream) {
-        var video = document.getElementById("video2");
-        video.play(); // play your media here then stop the stream when done below...
-        stream.getTracks().forEach(function (track) {
-          track.stop();
-        });
+    const constraints = {
+      audio: true,
+      video: true,
+      options: {
+        mirror: true,
+      },
+    };
+
+    navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+      var video = document.getElementById("video2");
+      video.play(); // play your media here then stop the stream when done below...
+      stream.getTracks().forEach(function (track) {
+        track.stop();
       });
+    });
 
     this.joinSession = this.joinSession.bind(this);
     this.leaveSession = this.leaveSession.bind(this);
