@@ -52,7 +52,7 @@ class Uploadppt extends React.Component {
           console.log(response.data);
           var ppts = response.data;
           const db = getDatabase();
-          const postListRef = ref(db, time + "ppt/" + roomName);
+          const postListRef = ref(db, time + "/ppt/" + roomName);
           set(postListRef, ppts);
           onDisconnect(postListRef).remove();
         }
