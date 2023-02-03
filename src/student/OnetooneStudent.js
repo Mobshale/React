@@ -126,10 +126,13 @@ class Student extends React.Component {
         }
       }, 5000);
     }
+    var tab = document.getElementById("sharescreen-stu");
+
+    console.log("manu");
+    tab.style.visibility = "hidden";
 
     const pptRef = ref(db, "/" + time + "/" + roomN + "/ss");
     onValue(pptRef, (snapshot) => {
-      var tab = document.getElementById("sharescreen-stu");
       if (snapshot.val() == 1) {
         tab.style.visibility = "visible";
       } else if (snapshot.val() == 0) {
