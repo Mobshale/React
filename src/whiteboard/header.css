@@ -41,6 +41,17 @@
   bottom: 0;
 }
 
+.deleteppt-btn {
+  display: flex;
+  position: absolute;
+  right: 29%;
+  justify-content: center;
+  width: 40px;
+  align-items: center;
+  top: 0;
+  bottom: 0;
+}
+
 .draw-headerbox-box-cell :hover {
   background-color: #e8e9e9;
 }

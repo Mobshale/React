@@ -72,6 +72,9 @@ class Canvaboard extends React.Component {
             break;
           case "pollprogress":
             break;
+          case "pptremove":
+            realisticPen.deletePPtsDrawings();
+            break;
           default:
             tool = tol;
             attach();

@@ -21,7 +21,7 @@ import laser from "../svg/arrow.svg";
 import { useSyncExternalStore } from "react";
 
 export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
-  console.log(roomName);
+  // console.log(roomName);
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   var wirtng = 0;
@@ -29,7 +29,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   var pptlist = [];
   var imagesbase = [];
   var base64 = [];
-  console.log(tol);
+  // console.log(tol);
   var clearedforstudent = false;
   var llx, lly, hhx, hhy;
   var Previouswasmove = false;
@@ -177,7 +177,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
       pstry = snapshot.val();
       if (pstry != null) {
         pages = pstry;
-        console.log(pages);
+        // console.log(pages);
         if (pages[currentPage - 1] != null) {
           if (typeof pages[currentPage - 1] != "undefined") {
             _context.clearRect(0, 0, _canvas.width, _canvas.height);
@@ -216,12 +216,12 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
     });
 
     onValue(ref(db, time + "/pages" + "/" + roomName), (snapshot) => {
-      console.log("firbase updated");
+      // console.log("firbase updated");
       var pstry;
       pstry = snapshot.val();
       if (pstry != null) {
         pages = pstry;
-        console.log(pages);
+        // console.log(pages);
         if (pages[currentPage - 1] != null) {
           if (typeof pages[currentPage - 1] != "undefined") {
             _context.clearRect(0, 0, _canvas.width, _canvas.height);
@@ -300,7 +300,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   };
   this.updateTool = function (toolU) {
     tool = toolU;
-    console.log(tool);
+    // console.log(tool);
     switch (tool) {
       case "pen":
         _canvas.style.cursor =
@@ -374,18 +374,34 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
 
   this.setNewPage = function () {};
 
+  this.deletePPtsDrawings = function () {
+    if (type == 1) {
+      pathsry = [];
+      pages = [];
+      points = [];
+      pptlist = [];
+      const postListRef = ref(db, time + "/pages" + "/" + roomName);
+      // const newPostRef = push(postListRef);
+      remove(postListRef);
+      const pptListRef = ref(db, time + "/ppt" + "/" + roomName);
+      // const newPostRef = push(postListRef);
+      remove(pptListRef);
+      Redraw(currentPage - 1);
+    }
+  };
+
   // when a teacher chages the page on whiteboard
   this.pageChange = function (val) {
     snapshot = null;
     snapshot2 = null;
     currentPage = val;
-    console.log(val);
+    // console.log(val);
     writeUserData(roomName, tool, 0, 0, 3);
 
-    console.log(pages);
+    // console.log(pages);
     if (previousPage < val) {
       if (pages.length < val) {
-        console.log("new page");
+        // console.log("new page");
         _context.clearRect(0, 0, _canvas.width, _canvas.height);
         _context.fillStyle = "#F3F6F9";
         _context.fillRect(0, 0, _canvas.width, _canvas.height);
@@ -400,7 +416,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
         pathsry = [];
         drawimage();
       } else {
-        console.log("after page");
+        // console.log("after page");
         _context.clearRect(0, 0, _canvas.width, _canvas.height);
         _context.fillStyle = "#F3F6F9";
         _context.fillRect(0, 0, _canvas.width, _canvas.height);
@@ -418,7 +434,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
       previousPage = val;
     } else {
       _context.clearRect(0, 0, _canvas.width, _canvas.height);
-      console.log("before page");
+      // console.log("before page");
       _context.fillStyle = "#F3F6F9";
       _context.fillRect(0, 0, _canvas.width, _canvas.height);
       pages[previousPage - 1] = pathsry;
@@ -460,15 +476,15 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   function Redraw(val) {
     snapshot = null;
     snapshot2 = null;
-    console.log("page ", val);
+    // console.log("page ", val);
     if (pages != null) {
-      console.log(pages);
+      // console.log(pages);
       pathsry = pages[val];
-      console.log(pathsry);
+      // console.log(pathsry);
     }
 
     if (typeof pathsry == "undefined") {
-      console.log("new page");
+      // console.log("new page");
       _context.clearRect(0, 0, _canvas.width, _canvas.height);
       _context.fillStyle = "#F3F6F9";
       _context.fillRect(0, 0, _canvas.width, _canvas.height);
@@ -658,13 +674,13 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
           var h = _canvas.clientHeight;
 
           var pa = path[0].text;
-          console.log(pa);
+          // console.log(pa);
           var text = "";
           for (var k = 0; k < pa.length; k++) {
-            console.log(pa[k]);
+            // console.log(pa[k]);
             text = text + "" + pa[k];
           }
-          console.log(text);
+          // console.log(text);
 
           _context.font = "30px Arial";
           _context.fillStyle = "black";
@@ -680,7 +696,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   }
 
   function lop(i) {
-    console.log(i);
+    // console.log(i);
     imagesbase[i] = new Image();
     imagesbase[i].src = pptlist[i];
     imagesbase[i].setAttribute("crossOrigin", "");
@@ -690,7 +706,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   }
 
   function drawimage() {
-    console.log(currentPage - 1);
+    // console.log(currentPage - 1);
     if (pptlist[currentPage - 1]) {
       var w = _canvas.clientWidth - 80;
       var h = _canvas.clientHeight;
@@ -698,7 +714,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
       base64[currentPage - 1] = _canvas.todataUrl;
 
       imagesbase[currentPage - 1].onload = function () {
-        console.log("jfks");
+        // console.log("jfks");
         _context.drawImage(
           imagesbase[currentPage - 1],
           40,
@@ -719,7 +735,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
       // if(imagesbase[pagecount+1]){
       //     ctx.drawImage(imagesbase[pagecount+1], w+10,0,50,50);
       // }
-      console.log(currentPage - 1);
+      // console.log(currentPage - 1);
     }
   }
 
@@ -883,7 +899,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
         pathsry.push(points);
         points = [];
       } else {
-        console.log(recentWord);
+        // console.log(recentWord);
         points.push({
           x: dragingstrtLoc.x,
           y: dragingstrtLoc.y,
@@ -1030,29 +1046,29 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
         Previouswasmove = true;
         points = [];
         pathsry.every((path) => {
-          console.log(path);
+          // console.log(path);
           var lastpoint = path.length - 1;
           var lx, ly, hx, hy;
-          console.log(lastpoint);
+          // console.log(lastpoint);
           lx = path[lastpoint].lx;
           ly = path[lastpoint].ly;
           hx = path[lastpoint].hx;
           hy = path[lastpoint].hy;
-          console.log(mouseX, mouseY);
-          console.log(lx, ly, hx, hy);
+          // console.log(mouseX, mouseY);
+          // console.log(lx, ly, hx, hy);
           if (lx < mouseX) {
             if (hx > mouseX) {
               if (ly < mouseY) {
                 if (hy > mouseY) {
-                  console.log("got in control of the element");
+                  // console.log("got in control of the element");
                   selectedItem = pathsry.indexOf(path);
-                  console.log(pathsry);
-                  console.log(selectedItem);
+                  // console.log(pathsry);
+                  // console.log(selectedItem);
                   secPath = path;
                   pathsry = arrayRemove(pathsry, path);
                   Selecttheelement(lx, ly, hx, hy, path[lastpoint].z);
-                  console.log("manojdd");
-                  console.log(pathsry);
+                  // console.log("manojdd");
+                  // console.log(pathsry);
                   pages[currentPage - 1] = pathsry;
                   strtDrag = true;
                   clicked = true;
@@ -1252,7 +1268,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
       case "drag":
         tempPoints = [];
         if (strtDrag) {
-          console.log(temptool);
+          // console.log(temptool);
 
           if (temptool === "pen") {
             clicked = false;
@@ -1536,55 +1552,80 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   }
   function erase(mouseX, mouseY) {
     points = [];
-    console.log(pathsry);
-    pathsry.forEach((path) => {
-      if (path.length != 0) {
-        console.log(path);
-        var lastpoint = path.length - 1;
+    // console.log(pathsry);
+    if (pathsry.length == 1 && type == 0) {
+      onValue(ref(db, time + "/pages" + "/" + roomName), (snapshot) => {
+        // console.log("firbase updated");
+        var pstry;
+        pstry = snapshot.val();
+        if (pstry != null) {
+          pages = pstry;
+          // console.log(pages);
+          if (pages[currentPage - 1] != null) {
+            if (typeof pages[currentPage - 1] != "undefined") {
+              _context.clearRect(0, 0, _canvas.width, _canvas.height);
+              _context.fillStyle = "#F3F6F9";
+              _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
+              Redraw(currentPage - 1);
+            }
+          }
+        }
+      });
+    } else {
+      pathsry.forEach((path) => {
+        if (path.length != 0) {
+          // console.log(path);
+          var lastpoint = path.length - 1;
 
-        var lx, ly, hx, hy;
-        console.log(lastpoint);
+          var lx, ly, hx, hy;
+          // console.log(lastpoint);
 
-        lx = path[lastpoint].lx;
-        ly = path[lastpoint].ly;
-        hx = path[lastpoint].hx;
-        hy = path[lastpoint].hy;
+          lx = path[lastpoint].lx;
+          ly = path[lastpoint].ly;
+          hx = path[lastpoint].hx;
+          hy = path[lastpoint].hy;
 
-        console.log(lx, ly, hx, hy);
+          // console.log(lx, ly, hx, hy);
 
-        if (lx < mouseX) {
-          if (hx > mouseX) {
-            if (ly < mouseY) {
-              if (hy > mouseY) {
-                console.log(path);
-                var index = pathsry.indexOf(path);
-                console.log(index, " manojd");
-                // socket.emit('erase',index,Roomname,pagecount);
-                pathsry = arrayRemove(pathsry, path);
-                console.log(pathsry);
-                pages[currentPage - 1] = pathsry;
-                console.log(pages);
-                _context.clearRect(0, 0, _canvas.width, _canvas.height);
-                _context.fillStyle = "#F3F6F9";
-                _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
-                Redraw(currentPage - 1);
-                if (type == "1") {
-                  const postListRef = ref(
-                    db,
-                    time + "/pages" + "/" + roomName + "/" + (previousPage - 1)
-                  );
-                  set(postListRef, pathsry);
+          if (lx < mouseX) {
+            if (hx > mouseX) {
+              if (ly < mouseY) {
+                if (hy > mouseY) {
+                  // console.log(path);
+                  var index = pathsry.indexOf(path);
+                  // console.log(index, " manojd");
+                  // socket.emit('erase',index,Roomname,pagecount);
+                  pathsry = arrayRemove(pathsry, path);
+                  // console.log(pathsry);
+                  pages[currentPage - 1] = pathsry;
+                  // console.log(pages);
+                  _context.clearRect(0, 0, _canvas.width, _canvas.height);
+                  _context.fillStyle = "#F3F6F9";
+                  _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
+                  Redraw(currentPage - 1);
+                  if (type == "1") {
+                    const postListRef = ref(
+                      db,
+                      time +
+                        "/pages" +
+                        "/" +
+                        roomName +
+                        "/" +
+                        (previousPage - 1)
+                    );
+                    set(postListRef, pathsry);
+                  }
                 }
               }
             }
           }
         }
-      }
-    });
+      });
+    }
   }
 
   function textlistner(e) {
-    console.log(e.key);
+    // console.log(e.key);
     if (tool == "text") {
       if (e.keyCode === 8) {
         if (recentWord.length > 0) {
@@ -1975,7 +2016,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
         } else {
           strtDrag = false;
           if (tempPoints.length != 0) {
-            console.log(tempPoints);
+            // console.log(tempPoints);
             pathsry.push(tempPoints);
             // socket.emit('moved',selectedItem,tempPoints,Roomname,pagecount);
             // ctx.beginPath();
@@ -1991,7 +2032,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
           }
           // set(postListRef,pathsry )
           tempPoints = [];
-          console.log(pathsry);
+          // console.log(pathsry);
           lowx = 0;
           lowy = 0;
           highy = 0;
@@ -2004,17 +2045,17 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
     }
     if (type == "1") {
       if (points.length != 0) {
-        console.log("hey");
+        // console.log("hey");
         pathsry.push(points);
-        console.log(points);
+        // console.log(points);
         //updating new drawings on firebase
         const postListRef = ref(
           db,
           time + "/pages" + "/" + roomName + "/" + (previousPage - 1)
         );
         // const newPostRef = push(postListRef);
-        console.log("manoj");
-        console.log(pathsry);
+        // console.log("manoj");
+        // console.log(pathsry);
         set(postListRef, pathsry);
 
         // set(newPostRef, pages[previousPage-1]);
@@ -2056,7 +2097,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
         }
       },
       onCanvasMouseUp = function (event) {
-        console.log(event.pageX);
+        // console.log(event.pageX);
         if (type == "1") {
           var canvasOffset = _offset(_canvas);
           // _strokeEnd(event.pageX - canvasOffset.left, event.pageY  - canvasOffset.top);
@@ -2414,7 +2455,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
       ref(db, time + "/pages" + "/" + roomName),
       (snapshot) => {
         pages = snapshot.val();
-        console.log(pages);
+        // console.log(pages);
         if (pages != null) {
           if (typeof pages[0] != "undefined") {
             // Redraw(0);
@@ -2532,13 +2573,13 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   }
 
   function pageChangeOn(val) {
-    console.log(previousPage, " ", val);
-    console.log("hey  ", pages);
+    // console.log(previousPage, " ", val);
+    // console.log("hey  ", pages);
     onValue(
       ref(db, time + "/pages" + "/" + roomName),
       (snapshot) => {
         pages = snapshot.val();
-        console.log(pages);
+        // console.log(pages);
         if (pages != null) {
           if (typeof pages[0] != "undefined") {
           }
@@ -2552,23 +2593,23 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
     var pos = previousPage - 1;
     if (pos < val) {
       if (pages == null) {
-        console.log("new page");
+        // console.log("new page");
         _context.clearRect(0, 0, _canvas.width, _canvas.height);
         _context.fillStyle = "#F3F6F9";
         _context.fillRect(0, 0, _canvas.width, _canvas.height);
         pathsry = [];
         drawimage();
       } else {
-        console.log(pages.length + "   hello" + val);
+        // console.log(pages.length + "   hello" + val);
         if (pages.length < val) {
-          console.log("new page");
+          // console.log("new page");
           _context.clearRect(0, 0, _canvas.width, _canvas.height);
           _context.fillStyle = "#F3F6F9";
           _context.fillRect(0, 0, _canvas.width, _canvas.height);
           pathsry = [];
           drawimage();
         } else {
-          console.log("after page");
+          // console.log("after page");
           _context.clearRect(0, 0, _canvas.width, _canvas.height);
           _context.fillStyle = "#F3F6F9";
           _context.fillRect(0, 0, _canvas.width, _canvas.height);
@@ -2578,7 +2619,7 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
       }
     } else {
       _context.clearRect(0, 0, _canvas.width, _canvas.height);
-      console.log("before page");
+      // console.log("before page");
       _context.fillStyle = "#F3F6F9";
       _context.fillRect(0, 0, _canvas.width, _canvas.height);
       pathsry = [];

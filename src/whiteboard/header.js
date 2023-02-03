@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import { Popover, Tooltip, Typography } from "antd";
 import "antd/dist/antd.css";
 import exit from "./image/exit.svg";
+import { MContext } from "./MyProvider";
 import "./header.css";
 import {
   FundProjectionScreenOutlined,
   ShareAltOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { deleteApp, initializeApp } from "firebase/app";
 import { firebaseConfig } from "../main/firebaseCon";
@@ -69,6 +71,10 @@ class Header extends React.Component {
     }
   }
 
+  clearppt = (context) => {
+    context.setMessage("pptremove");
+  };
+
   showConfirm() {
     confirm({
       title: "Do you want to end the session",
@@ -118,65 +124,91 @@ class Header extends React.Component {
     );
 
     return (
-      <div class="header-tab">
-        <Title
-          level={3}
-          style={{
-            fontFamily: "sans-serif",
-            textAlign: "center",
-            marginLeft: "10px",
-            marginTop: "4px",
-          }}
-        >
-          flames{" "}
-        </Title>
-
-        <div class="sharescreen-btn">
-          <div class="draw-headerbox-box-cell">
-            <div
-              id="tool-headerbox-cell-screen"
-              class="tool-headerbox-cell"
-              onClick={this.startCapture}
+      <MContext.Consumer>
+        {(context) => (
+          <div class="header-tab">
+            <Title
+              level={3}
+              style={{
+                fontFamily: "sans-serif",
+                textAlign: "center",
+                marginLeft: "10px",
+                marginTop: "4px",
+              }}
             >
-              <Tooltip
-                placement="bottomRight"
-                title={<span>Share screen</span>}
-              >
-                <FundProjectionScreenOutlined style={{ fontSize: "20px" }} />
-              </Tooltip>
-            </div>
-          </div>
-        </div>
+              flames{" "}
+            </Title>
 
-        <div class="sharelink-btn">
-          <div class="draw-headerbox-box-cell">
-            <div id="tool-headerbox-cell" class="tool-headerbox-cell">
-              <Popover
-                placement="bottomRight"
-                title={"Share link"}
-                content={content}
-                trigger="hover"
-              >
-                <ShareAltOutlined style={{ fontSize: "20px" }} />
-              </Popover>
+            <div class="sharescreen-btn">
+              <div class="draw-headerbox-box-cell">
+                <div
+                  id="tool-headerbox-cell-screen"
+                  class="tool-headerbox-cell"
+                  onClick={this.startCapture}
+                >
+                  <Tooltip
+                    placement="bottomRight"
+                    title={<span>Share screen</span>}
+                  >
+                    <FundProjectionScreenOutlined
+                      style={{ fontSize: "20px" }}
+                    />
+                  </Tooltip>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div class="end-class-btn">
-          <div class="draw-headerbox-box-cell">
-            <div
-              id="tool-headerbox-cell-screen"
-              class="tool-headerbox-cell"
-              onClick={() => this.showConfirm()}
-            >
-              <Tooltip placement="bottomRight" title={<span>End Class</span>}>
-                <img class="exit" src={exit} alt="End class"></img>
-              </Tooltip>
+            <div class="sharelink-btn">
+              <div class="draw-headerbox-box-cell">
+                <div id="tool-headerbox-cell" class="tool-headerbox-cell">
+                  <Popover
+                    placement="bottomRight"
+                    title={"Share link"}
+                    content={content}
+                    trigger="hover"
+                  >
+                    <ShareAltOutlined style={{ fontSize: "20px" }} />
+                  </Popover>
+                </div>
+              </div>
+            </div>
+
+            <div class="deleteppt-btn">
+              <div class="draw-headerbox-box-cell">
+                <div
+                  id="tool-headerbox-cell"
+                  class="tool-headerbox-cell"
+                  onClick={() => this.clearppt(context)}
+                >
+                  <Tooltip
+                    placement="bottomRight"
+                    title={<span>Clear ppt</span>}
+                  >
+                    <DeleteOutlined style={{ fontSize: "20px" }} />
+                  </Tooltip>
+                </div>
+              </div>
+            </div>
+
+            <div class="end-class-btn">
+              <div class="draw-headerbox-box-cell">
+                <div
+                  id="tool-headerbox-cell-screen"
+                  class="tool-headerbox-cell"
+                  onClick={() => this.showConfirm()}
+                >
+                  <Tooltip
+                    placement="bottomRight"
+                    title={<span>End Class</span>}
+                  >
+                    <img class="exit" src={exit} alt="End class"></img>
+                  </Tooltip>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        )}
+      </MContext.Consumer>
     );
   }
 }
