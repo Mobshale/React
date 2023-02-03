@@ -216,12 +216,13 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
     });
 
     onValue(ref(db, time + "/pages" + "/" + roomName), (snapshot) => {
-      // console.log("firbase updated");
+      console.log("firbase updated");
       var pstry;
       pstry = snapshot.val();
+      console.log(pstry);
       if (pstry != null) {
         pages = pstry;
-        // console.log(pages);
+        console.log(pages);
         if (pages[currentPage - 1] != null) {
           if (typeof pages[currentPage - 1] != "undefined") {
             _context.clearRect(0, 0, _canvas.width, _canvas.height);
@@ -229,6 +230,19 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
             _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
             Redraw(currentPage - 1);
           }
+        }
+      } else {
+        pages = pstry;
+        pathsry = [];
+        console.log(pstry);
+        if (_context != null) {
+          console.log(pages);
+          console.log(pathsry);
+          console.log(pstry);
+          _context.clearRect(0, 0, _canvas.width, _canvas.height);
+          _context.fillStyle = "#F3F6F9";
+          _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
+          Redraw(currentPage - 1);
         }
       }
     });
@@ -1247,7 +1261,9 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
         drawRohmbus(position, dragingstrtLoc);
         break;
       case "eraser":
-        erase(mouseX, mouseY);
+        if (type == 1) {
+          erase(mouseX, mouseY);
+        }
         break;
       case "arrow":
         resotreSnapShotCanvas();
@@ -1552,76 +1568,50 @@ export function RealisticPen(inCanvas, inOptions, tol, roomName, type) {
   }
   function erase(mouseX, mouseY) {
     points = [];
-    // console.log(pathsry);
-    if (pathsry.length == 1 && type == 0) {
-      onValue(ref(db, time + "/pages" + "/" + roomName), (snapshot) => {
-        // console.log("firbase updated");
-        var pstry;
-        pstry = snapshot.val();
-        if (pstry != null) {
-          pages = pstry;
-          // console.log(pages);
-          if (pages[currentPage - 1] != null) {
-            if (typeof pages[currentPage - 1] != "undefined") {
-              _context.clearRect(0, 0, _canvas.width, _canvas.height);
-              _context.fillStyle = "#F3F6F9";
-              _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
-              Redraw(currentPage - 1);
-            }
-          }
-        }
-      });
-    } else {
-      pathsry.forEach((path) => {
-        if (path.length != 0) {
-          // console.log(path);
-          var lastpoint = path.length - 1;
+    pathsry.forEach((path) => {
+      if (path.length != 0) {
+        // console.log(path);
+        var lastpoint = path.length - 1;
 
-          var lx, ly, hx, hy;
-          // console.log(lastpoint);
+        var lx, ly, hx, hy;
+        // console.log(lastpoint);
 
-          lx = path[lastpoint].lx;
-          ly = path[lastpoint].ly;
-          hx = path[lastpoint].hx;
-          hy = path[lastpoint].hy;
+        lx = path[lastpoint].lx;
+        ly = path[lastpoint].ly;
+        hx = path[lastpoint].hx;
+        hy = path[lastpoint].hy;
 
-          // console.log(lx, ly, hx, hy);
+        // console.log(lx, ly, hx, hy);
 
-          if (lx < mouseX) {
-            if (hx > mouseX) {
-              if (ly < mouseY) {
-                if (hy > mouseY) {
-                  // console.log(path);
-                  var index = pathsry.indexOf(path);
-                  // console.log(index, " manojd");
-                  // socket.emit('erase',index,Roomname,pagecount);
-                  pathsry = arrayRemove(pathsry, path);
-                  // console.log(pathsry);
-                  pages[currentPage - 1] = pathsry;
-                  // console.log(pages);
-                  _context.clearRect(0, 0, _canvas.width, _canvas.height);
-                  _context.fillStyle = "#F3F6F9";
-                  _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
-                  Redraw(currentPage - 1);
-                  if (type == "1") {
-                    const postListRef = ref(
-                      db,
-                      time +
-                        "/pages" +
-                        "/" +
-                        roomName +
-                        "/" +
-                        (previousPage - 1)
-                    );
-                    set(postListRef, pathsry);
-                  }
+        if (lx < mouseX) {
+          if (hx > mouseX) {
+            if (ly < mouseY) {
+              if (hy > mouseY) {
+                // console.log(path);
+                var index = pathsry.indexOf(path);
+                // console.log(index, " manojd");
+                // socket.emit('erase',index,Roomname,pagecount);
+                pathsry = arrayRemove(pathsry, path);
+                // console.log(pathsry);
+                pages[currentPage - 1] = pathsry;
+                // console.log(pages);
+                _context.clearRect(0, 0, _canvas.width, _canvas.height);
+                _context.fillStyle = "#F3F6F9";
+                _context.fillRect(0, 0, _canvas.width, _canvas.clientHeight);
+                Redraw(currentPage - 1);
+                if (type == "1") {
+                  const postListRef = ref(
+                    db,
+                    time + "/pages" + "/" + roomName + "/" + (previousPage - 1)
+                  );
+                  set(postListRef, pathsry);
                 }
               }
             }
           }
         }
-      });
-    }
+      }
+    });
   }
 
   function textlistner(e) {
