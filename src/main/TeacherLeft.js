@@ -49,7 +49,7 @@ function TeacherLeft(props) {
         status="warning"
         title="The teacher has left the session, please wait until the teacher rejoin"
         extra={
-          <Button onClick={() => GoToHome()} type="primary" key="console">
+          <Button href="https://mobshale.com/" type="primary" key="console">
             Go Console
           </Button>
         }

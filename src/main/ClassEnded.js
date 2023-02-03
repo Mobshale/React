@@ -6,7 +6,7 @@ import "./teacherleft.css";
 function ClassEnded(props) {
   const GoToHome = () => {
     console.log("Helmk");
-    props.history.push("/");
+    props.history.push("https://mobshale.com/");
   };
 
   return (
@@ -15,7 +15,7 @@ function ClassEnded(props) {
         icon={<SmileOutlined />}
         title="Great, The session has ended, see you again!"
         extra={
-          <Button onClick={() => GoToHome()} type="primary">
+          <Button href="https://mobshale.com/" type="primary">
             Back to Home
           </Button>
         }
