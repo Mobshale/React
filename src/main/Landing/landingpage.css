@@ -4,10 +4,6 @@
   padding: 0;
 }
 
-body {
-  font-family: "Montserrat";
-}
-
 .logo-container {
   margin-top: 0.5rem;
 }
@@ -38,6 +34,7 @@ body {
 }
 
 .content {
+  font-family: "Montserrat";
   display: flex;
   flex-direction: column;
   justify-content: center;

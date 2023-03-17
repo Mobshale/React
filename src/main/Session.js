@@ -143,7 +143,9 @@ function Session(props) {
               >
                 <h1>Upto 30</h1>
                 <p>Participants</p>
-                <div class="price-standard"> ₹99/Month </div>
+                <div class="price-free"> Free </div>
+
+                {/* <div class="price-standard"> ₹99/Month </div> */}
               </div>
 
               <div
@@ -162,7 +164,9 @@ function Session(props) {
               >
                 <h1>100+</h1>
                 <p>Participants</p>
-                <div class="price-premium"> ₹499/Month </div>
+                <div class="price-free"> Free </div>
+
+                {/* <div class="price-premium"> ₹499/Month </div> */}
               </div>
             </div>
 
