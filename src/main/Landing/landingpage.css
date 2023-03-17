@@ -34,8 +34,8 @@
 }
 
 .content {
-  font-family: "Montserrat";
   display: flex;
+  font-family: "Montserrat";
   flex-direction: column;
   justify-content: center;
   align-items: center;

@@ -23,7 +23,7 @@ function LoginLayout(props) {
     <div>
       <Switch>
         <Route exact path="/Session" component={SessionDetails}></Route>
-        <Route exact path="/Landingpage" component={Landingpage}></Route>
+        <Route exact path="/Intro" component={Landingpage}></Route>
         <Route
           exact
           path="/sishya/:roomName/:userName/:cdoc/:sdoc"
