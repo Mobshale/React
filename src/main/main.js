@@ -217,7 +217,7 @@ class Main extends React.Component {
                       </span>
                     </button>
                   </div>
-
+                  {/* 
                   <div class="pp-btn">
                     <button type="button" class="phone-btn">
                       <span class="v-btn">
@@ -228,7 +228,7 @@ class Main extends React.Component {
                         Continue with Phone Number
                       </span>
                     </button>
-                  </div>
+                  </div> */}
 
                   <div class="or--">
                     <div class="line-single"></div>&nbsp; or &nbsp;
