@@ -1,5 +1,5 @@
 import React from "react";
-import "./landingpage.css";
+// import "./landingpage.css";
 
 const Header = (props) => {
   return (

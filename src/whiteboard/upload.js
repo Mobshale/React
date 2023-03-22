@@ -76,10 +76,20 @@ class Uploadppt extends React.Component {
         });
       },
       beforeUpload: (file) => {
-        this.setState((state) => ({
-          fileList: [...state.fileList, file],
-        }));
-        return false;
+        const isPPT =
+          file.type === "application/vnd.ms-powerpoint" ||
+          file.type ===
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+        if (!isPPT) {
+          message.error("You can only upload PPT or PPTX files!");
+        } else {
+          const fileName = file.name.replace(/\s/g, "_"); // replace spaces with underscores
+          const newFile = new File([file], fileName, { type: file.type });
+          this.setState((state) => ({
+            fileList: [...state.fileList, newFile],
+          }));
+        }
+        return isPPT;
       },
       fileList,
     };

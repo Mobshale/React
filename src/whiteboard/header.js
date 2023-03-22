@@ -200,7 +200,7 @@ class Header extends React.Component {
             >
               flames{" "}
             </Title>
-
+            {/* 
             <div
               style={{
                 position: "relative",
@@ -221,7 +221,7 @@ class Header extends React.Component {
               >
                 {}
               </Title>
-            </div>
+            </div> */}
 
             {type === 1 ? (
               <div class="sharescreen-btn">
