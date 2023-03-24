@@ -141,15 +141,17 @@ function SharingScreen(props) {
   });
 
   const fullScreen = () => {
-    var videoElement = document.getElementById("screen-video-stu");
-    if (videoElement.requestFullscreen) {
-      videoElement.requestFullscreen();
-    } else if (videoElement.webkitRequestFullscreen) {
-      /* Safari */
-      videoElement.webkitRequestFullscreen();
-    } else if (videoElement.msRequestFullscreen) {
-      /* IE11 */
-      videoElement.msRequestFullscreen();
+    var video = document.getElementById("screen-video-stu");
+    if (video.requestFullscreen) {
+      video.requestFullscreen();
+    } else if (video.webkitEnterFullscreen) {
+      video.webkitEnterFullscreen();
+    } else if (video.webkitRequestFullScreen) {
+      video.webkitRequestFullScreen(Element.ALLOW_FULLSCREEN);
+    } else if (video.msRequestFullscreen) {
+      video.msRequestFullscreen();
+    } else {
+      video.webkitEnterFullScreen();
     }
   };
 
