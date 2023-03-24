@@ -1,6 +1,6 @@
 import react, { useEffect, useState } from "react";
 import { Popover, Tooltip, Typography } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, FullscreenOutlined } from "@ant-design/icons";
 import "./SharingScreen.css";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
@@ -140,17 +140,18 @@ function SharingScreen(props) {
       });
   });
 
-  // const closeClicked = () => {
-  //     var videoElem = document.getElementById('screen-video');
-  //     if(videoElem.srcObject!=null){
-  //         let tracks = videoElem.srcObject.getTracks();
-  //         tracks.forEach(track => track.stop());
-  //         videoElem.srcObject = null;
-  //         setVisible(!visible)
-  //     }
-  //     setVisible(!visible)
-
-  // }
+  const fullScreen = () => {
+    var videoElement = document.getElementById("screen-video-stu");
+    if (videoElement.requestFullscreen) {
+      videoElement.requestFullscreen();
+    } else if (videoElement.webkitRequestFullscreen) {
+      /* Safari */
+      videoElement.webkitRequestFullscreen();
+    } else if (videoElement.msRequestFullscreen) {
+      /* IE11 */
+      videoElement.msRequestFullscreen();
+    }
+  };
 
   return (
     <div
@@ -164,6 +165,13 @@ function SharingScreen(props) {
             <div class="close-headerbox-cell-stu">
               <CloseOutlined style={{ fontSize: "20px" }} />
             </div>
+          </div>
+        </div>
+      </div>
+      <div class="header-share-tab-stu">
+        <div class="fullscreen-btn-stu" onClick={fullScreen}>
+          <div class="fullscreen-headerbox-box-cell-stu">
+            <FullscreenOutlined style={{ fontSize: "20px" }} />
           </div>
         </div>
       </div>

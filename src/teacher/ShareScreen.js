@@ -1,6 +1,6 @@
 import react, { useEffect, useState } from "react";
 import { Popover, Tooltip, Typography } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, FullscreenOutlined } from "@ant-design/icons";
 import "./Sharescreen.css";
 import { deleteApp, initializeApp } from "firebase/app";
 import { firebaseConfig } from "../main/firebaseCon";
