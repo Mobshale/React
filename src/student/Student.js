@@ -26,6 +26,8 @@ import {
 } from "firebase/database";
 import { Redirect } from "react-router-dom";
 import ClassEnded from "../main/ClassEnded";
+import Mic from "./Mic";
+import MuteButton from "./Mic";
 
 var roomN;
 var userN;
@@ -359,6 +361,8 @@ class Student extends React.Component {
             roomName={roomN}
             style={{ visbility: "hidden" }}
           ></SharingScreen>
+          <MuteButton></MuteButton>
+
           <Video childToParent={(v) => this.childToParent(v)}></Video>
           <Chat userName={userN} roomName={roomN}></Chat>
           <Pollsoption roomName={roomN}></Pollsoption>
