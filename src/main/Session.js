@@ -65,6 +65,8 @@ function Session(props) {
 
   const startClass = () => {
     var sessionName = document.getElementById("sessionName").value;
+    sessionName = sessionName.replace(/\s+/g, "");
+
     if (sessionName) {
       if (sessionType == 1) {
         props.history.push(
