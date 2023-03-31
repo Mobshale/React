@@ -282,7 +282,7 @@ class Teacher extends React.Component {
             })
             .catch((error) => {
               console.log(
-                "There was an error connecting to the session:",
+                "There was an error connecting to the  session:",
                 error.code,
                 error.message
               );
