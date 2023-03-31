@@ -243,6 +243,15 @@ class Student extends React.Component {
           mySession
             .connect(token, { clientData: this.state.myUserName })
             .then(async () => {
+              const publisher = OpenVidu.initPublisher(undefined, {
+                audioSource: navigator.mediaDevices.getUserMedia({
+                  audio: true,
+                }),
+                videoSource: undefined,
+                publishAudio: true,
+                publishVideo: false,
+              });
+
               // var devices = await this.OV.getDevices();
               // var videoDevices = devices.filter(device => device.kind === 'videoinput');
               // console.log(videoDevices);
@@ -260,13 +269,12 @@ class Student extends React.Component {
               //     mirror: false, // Whether to mirror your local video or not
               // });
               // // --- 6) Publish your stream ---
-              // mySession.publish(publisher);
+              mySession.publish(publisher);
               // // Set the main video in the page to display our webcam and store our Publisher
-              // this.setState({
-              //     currentVideoDevice: videoDevices[0],
-              //     mainStreamManager: publisher,
-              //     publisher: publisher,
-              // });
+              this.setState({
+                mainStreamManager: publisher,
+                publisher: publisher,
+              });
             })
             .catch((error) => {
               console.log(
