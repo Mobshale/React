@@ -215,6 +215,10 @@ class Teacher extends React.Component {
             subscribeToAudio: true,
             subscribeToVideo: false,
           });
+
+          const audioElement = subscriber.streamManager.getAudioElement();
+          audioElement.autoplay = true;
+
           var subscribers = this.state.subscribers;
           subscribers.push(subscriber);
 
