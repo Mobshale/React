@@ -51,7 +51,7 @@ function MuteButton() {
             borderRadius: "4px",
             paddingBottom: "20px",
           }}
-          onClick={toggleMute}
+          onClick={() => toggleMute()}
         >
           <Button
             type="text"
