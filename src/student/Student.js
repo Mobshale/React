@@ -88,7 +88,7 @@ class Student extends React.Component {
     });
 
     navigator.mediaDevices
-      .getUserMedia({ audio: true })
+      .getUserMedia({ audio: true, video: true })
       .then(function (stream) {
         var video = document.getElementById("video2");
         video.play(); // play your media here then stop the stream when done below...
@@ -243,14 +243,30 @@ class Student extends React.Component {
           mySession
             .connect(token, { clientData: this.state.myUserName })
             .then(async () => {
-              const publisher = OpenVidu.initPublisher(undefined, {
-                audioSource: navigator.mediaDevices.getUserMedia({
-                  audio: true,
-                }),
-                videoSource: undefined,
-                publishAudio: true,
-                publishVideo: false,
+              var devices = await this.OV.getDevices();
+              var videoDevices = devices.filter(
+                (device) => device.kind === "videoinput"
+              );
+              console.log(videoDevices);
+
+              // --- 5) Get your own camera stream ---
+
+              // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
+              // element: we will manage it on our own) and with the desired properties
+              let publisher = this.OV.initPublisher(undefined, {
+                audioSource: undefined, // The source of audio. If undefined default microphone
+                videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
+                publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+                publishVideo: true, // Whether you want to start publishing with your video enabled or not
+                resolution: "640x480", // The resolution of your video
+                frameRate: 30, // The frame rate of your video
+                insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
+                mirror: false, // Whether to mirror your local video or not
               });
+
+              // --- 6) Publish your stream ---
+
+              mySession.publish(publisher);
 
               // var devices = await this.OV.getDevices();
               // var videoDevices = devices.filter(device => device.kind === 'videoinput');
@@ -269,7 +285,7 @@ class Student extends React.Component {
               //     mirror: false, // Whether to mirror your local video or not
               // });
               // // --- 6) Publish your stream ---
-              mySession.publish(publisher);
+              // mySession.publish(publisher);
               // // Set the main video in the page to display our webcam and store our Publisher
               this.setState({
                 mainStreamManager: publisher,

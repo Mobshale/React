@@ -208,16 +208,11 @@ class Teacher extends React.Component {
         mySession.on("streamCreated", (event) => {
           // Subscribe to the Stream to receive it. Second parameter is undefined
           // so OpenVidu doesn't create an HTML video by its own
-          console.log("brooo");
 
           console.log(event.stream);
-          var subscriber = mySession.subscribe(event.stream, undefined, {
-            subscribeToAudio: true,
-            subscribeToVideo: false,
-          });
-
-          const audioElement = subscriber.streamManager.getAudioElement();
-          audioElement.autoplay = true;
+          var subscriber = mySession.subscribe(event.stream, undefined);
+          console.log("brooo parg");
+          console.log(subscriber);
 
           var subscribers = this.state.subscribers;
           subscribers.push(subscriber);

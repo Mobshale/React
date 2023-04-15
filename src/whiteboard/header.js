@@ -108,16 +108,10 @@ class Header extends React.Component {
   async componentDidMount() {
     var longUrl;
     if (SessionType == 1) {
-      longUrl =
-        "?type=" + SessionType + "&ch=" + roomName + "&classtype=" + "onetoone";
+      longUrl = "?type=" + "2" + "&ch=" + roomName + "&classtype=" + "onetoone";
     } else {
       longUrl =
-        "?type=" +
-        SessionType +
-        "&ch=" +
-        roomName +
-        "&classtype=" +
-        "onetomany";
+        "?type=" + "2" + "&ch=" + roomName + "&classtype=" + "onetomany";
     }
     this.setState({
       linkmain: await createDynamicLink(sharelink + longUrl),
