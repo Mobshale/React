@@ -12,8 +12,8 @@ function MuteButton() {
       audioTracks.forEach((track) => {
         track.enabled = !isMuted;
       });
-      setIsMuted(!isMuted);
     }
+    setIsMuted(!isMuted);
   };
 
   useEffect(() => {
@@ -51,12 +51,12 @@ function MuteButton() {
             borderRadius: "4px",
             paddingBottom: "20px",
           }}
-          onClick={() => toggleMute()}
         >
           <Button
             type="text"
             style={{ padding: 0, backgroundColor: "#FFFFFF" }}
             className="mute-button"
+            onClick={() => toggleMute()}
           >
             {isMuted ? (
               <>
