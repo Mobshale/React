@@ -12,8 +12,8 @@ function MuteButton() {
       audioTracks.forEach((track) => {
         track.enabled = !isMuted;
       });
+      setIsMuted(!isMuted);
     }
-    setIsMuted(!isMuted);
   };
 
   useEffect(() => {
