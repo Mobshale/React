@@ -331,7 +331,7 @@ class Student extends React.Component {
     });
   }
   toggleMute = async () => {
-    await this.state.publisher.publishAudio(!this.state.audioEnabled);
+    // await this.state.publisher.publishAudio(!this.state.audioEnabled);
     this.setState({
       audioEnabled: !this.state.audioEnabled,
     });
