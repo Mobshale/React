@@ -10,7 +10,7 @@ import PollProgress from "../whiteboard/pollprogress";
 import Uploadppt from "../whiteboard/upload";
 import MyProvider from "../whiteboard/MyProvider";
 import axios from "axios";
-import { OpenVidu } from "openvidu-browser";
+import { OpenVidu, Publisher } from "openvidu-browser";
 import PropagateLoader from "react-spinners/PropagateLoader";
 import "./teacher.css";
 import { Button, Modal } from "antd";
@@ -38,6 +38,7 @@ var userN;
 var Cdoc;
 var Sdoc;
 var reren = 0;
+let publisher;
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -200,7 +201,7 @@ class Teacher extends React.Component {
         session: this.OV.initSession(),
       },
       () => {
-        var mySession = this.state.session;
+        const mySession = this.state.session;
 
         // --- 3) Specify the actions when events take place in the session ---
 
@@ -209,18 +210,14 @@ class Teacher extends React.Component {
           // Subscribe to the Stream to receive it. Second parameter is undefined
           // so OpenVidu doesn't create an HTML video by its own
 
+          console.log("lb dk");
           console.log(event.stream);
+          const stream = event.stream;
+          const audioElement = document.createElement("audio");
           var subscriber = mySession.subscribe(event.stream, undefined);
-          console.log("brooo parg");
-          console.log(subscriber);
-
           var subscribers = this.state.subscribers;
-          subscribers.push(subscriber);
 
-          // Update the state with the new subscribers
-          this.setState({
-            subscribers: subscribers,
-          });
+          console.log(subscriber.addVideoElement(audioElement));
         });
 
         // On every Stream destroyed...
@@ -254,7 +251,7 @@ class Teacher extends React.Component {
 
               // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
               // element: we will manage it on our own) and with the desired properties
-              let publisher = this.OV.initPublisher(undefined, {
+              publisher = this.OV.initPublisher(undefined, {
                 audioSource: undefined, // The source of audio. If undefined default microphone
                 videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
                 publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
@@ -290,6 +287,9 @@ class Teacher extends React.Component {
       }
     );
   }
+  toggleMute = () => {
+    publisher.publishAudio(false);
+  };
 
   async switchCamera() {
     try {
@@ -378,6 +378,7 @@ class Teacher extends React.Component {
           <PollProgress roomName={roomN}></PollProgress>
           <ShareScreen roomName={roomN}></ShareScreen>
           <Pag></Pag>
+          <Button onClick={() => this.toggleMute()}>Mute</Button>
           <Uploadppt roomName={roomN}></Uploadppt>
           <Toolbox></Toolbox>
           <Canvaboard message="pen" roomName={roomN} type="1"></Canvaboard>

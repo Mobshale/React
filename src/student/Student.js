@@ -13,6 +13,10 @@ import Pollsoption from "./Pollsotion";
 import SharingScreen from "./SharingScreen";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "../main/firebaseCon";
+import { Button, Modal } from "antd";
+import { Image } from "antd";
+import { MContext } from "../whiteboard/MyProvider";
+import { AudioMutedOutlined, AudioOutlined } from "@ant-design/icons";
 import {
   getDatabase,
   ref,
@@ -64,6 +68,7 @@ class Student extends React.Component {
       redirectTeacherOffline: false,
       redirectTeacherNot: false,
       classEnded: false,
+      audioEnabled: false,
     };
 
     const isliveRef = ref(db, "/" + time + "/islive/" + roomN + "/islive");
@@ -256,7 +261,7 @@ class Student extends React.Component {
               let publisher = this.OV.initPublisher(undefined, {
                 audioSource: undefined, // The source of audio. If undefined default microphone
                 videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
-                publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+                publishAudio: false, // Whether you want to start publishing with your audio unmuted or not
                 publishVideo: true, // Whether you want to start publishing with your video enabled or not
                 resolution: "640x480", // The resolution of your video
                 frameRate: 30, // The frame rate of your video
@@ -290,6 +295,7 @@ class Student extends React.Component {
               this.setState({
                 mainStreamManager: publisher,
                 publisher: publisher,
+                audioEnabled: false,
               });
             })
             .catch((error) => {
@@ -324,6 +330,12 @@ class Student extends React.Component {
       publisher: undefined,
     });
   }
+  toggleMute = async () => {
+    await this.state.publisher.publishAudio(!this.state.audioEnabled);
+    this.setState({
+      audioEnabled: !this.state.audioEnabled,
+    });
+  };
 
   render() {
     const { redirectTeacherOffline, redirectTeacherNot, classEnded } =
@@ -385,7 +397,46 @@ class Student extends React.Component {
             roomName={roomN}
             style={{ visbility: "hidden" }}
           ></SharingScreen>
-          <MuteButton></MuteButton>
+          <div>
+            <div
+              style={{
+                position: "fixed",
+                bottom: "10px",
+                left: "10px",
+                width: "80px",
+                height: "80px",
+                backgroundColor: "#FFFFFF",
+                color: "#000000",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+                zIndex: "999",
+                boxShadow: "0 8px 24px 0 rgb(0 0 0 / 10%)",
+                borderRadius: "4px",
+                paddingBottom: "20px",
+              }}
+            >
+              <Button
+                type="text"
+                style={{ padding: 0, backgroundColor: "#FFFFFF" }}
+                className="mute-button"
+                onClick={() => this.toggleMute()}
+              >
+                {this.state.audioEnabled ? (
+                  <>
+                    <AudioOutlined style={{ fontSize: "30px" }} />
+                    <div style={{ marginTop: "5px" }}>Muted</div>
+                  </>
+                ) : (
+                  <>
+                    <AudioMutedOutlined style={{ fontSize: "30px" }} />
+                    <div style={{ marginTop: "5px" }}>Unmuted</div>
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
 
           <Video childToParent={(v) => this.childToParent(v)}></Video>
           <Chat userName={userN} roomName={roomN}></Chat>

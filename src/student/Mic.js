@@ -2,33 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Button, Image } from "antd";
 import { MContext } from "../whiteboard/MyProvider";
 import { AudioMutedOutlined, AudioOutlined } from "@ant-design/icons";
-function MuteButton() {
+function MuteButton({ msg }) {
   const [isMuted, setIsMuted] = useState(true);
-  const [stream, setStream] = useState(null);
 
   const toggleMute = () => {
-    if (stream) {
-      const audioTracks = stream.getAudioTracks();
-      audioTracks.forEach((track) => {
-        track.enabled = !isMuted;
-      });
-      setIsMuted(!isMuted);
-    }
+    setIsMuted(!isMuted);
+    msg(isMuted);
   };
-
-  useEffect(() => {
-    async function getStream() {
-      try {
-        const audioStream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-        });
-        setStream(audioStream);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getStream();
-  }, []);
 
   return (
     <MContext.Consumer>
