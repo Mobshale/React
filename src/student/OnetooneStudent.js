@@ -93,6 +93,24 @@ class Student extends React.Component {
       },
     };
 
+    navigator.mediaDevices
+      .enumerateDevices()
+      .then((devices) => {
+        devices.forEach((device) => {
+          console.log(
+            "manu" +
+              device.kind +
+              ": " +
+              device.label +
+              " id = " +
+              device.deviceId
+          );
+        });
+      })
+      .catch((error) => {
+        console.log("manu" + error);
+      });
+
     navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
       var video = document.getElementById("video2");
       video.play(); // play your media here then stop the stream when done below...
