@@ -332,15 +332,19 @@ class Student extends React.Component {
   }
   toggleMute = async () => {
     // Request access to the audio device
+    // Get all available media devices (e.g. cameras, microphones)
     navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then(function (stream) {
-        // Access granted, do something with the audio stream
-        console.log("Audio access granted");
+      .enumerateDevices()
+      .then((devices) => {
+        // Filter the video devices only
+        const videoDevices = devices.filter(
+          (device) => device.kind === "videoinput"
+        );
+        // Log the video devices to the console
+        console.log("Available video devices:", videoDevices);
       })
-      .catch(function (err) {
-        // Access denied or error occurred, log the error message
-        console.log("Error accessing audio device: " + err.message);
+      .catch((error) => {
+        console.error("Error getting media devices:", error);
       });
 
     await this.state.publisher.publishAudio(!this.state.audioEnabled);
