@@ -248,7 +248,7 @@ class Student extends React.Component {
               var videoDevices = devices.filter(
                 (device) => device.kind === "videoinput"
               );
-              console.log(videoDevices);
+              console.log("manu" + videoDevices);
 
               // --- 5) Get your own camera stream ---
 
