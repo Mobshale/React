@@ -331,7 +331,19 @@ class Student extends React.Component {
     });
   }
   toggleMute = async () => {
-    // await this.state.publisher.publishAudio(!this.state.audioEnabled);
+    // Request access to the audio device
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then(function (stream) {
+        // Access granted, do something with the audio stream
+        console.log("Audio access granted");
+      })
+      .catch(function (err) {
+        // Access denied or error occurred, log the error message
+        console.log("Error accessing audio device: " + err.message);
+      });
+
+    await this.state.publisher.publishAudio(!this.state.audioEnabled);
     this.setState({
       audioEnabled: !this.state.audioEnabled,
     });
