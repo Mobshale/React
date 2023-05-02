@@ -101,6 +101,7 @@ class Teacher extends React.Component {
       publisher: undefined,
       subscribers: [],
       preloader: true,
+      muted: false,
     };
 
     this.joinSession = this.joinSession.bind(this);
@@ -289,6 +290,10 @@ class Teacher extends React.Component {
   }
   toggleMute = () => {
     publisher.publishAudio(false);
+    // console.log(this.state.muted);
+    this.setState({
+      muted: !this.state.muted,
+    });
   };
 
   async switchCamera() {
@@ -372,13 +377,16 @@ class Teacher extends React.Component {
             />
           </div>
           <Header teacher={1} roomName={roomN}></Header>
-          <Video childToParent={(v) => this.childToParent(v)}></Video>
+          <Video
+            toggleMute={() => this.toggleMute()}
+            muted={this.state.muted}
+            childToParent={(v) => this.childToParent(v)}
+          ></Video>
           <Chat userName={userN} roomName={roomN}></Chat>
           <Polls roomName={roomN}></Polls>
           <PollProgress roomName={roomN}></PollProgress>
           <ShareScreen roomName={roomN}></ShareScreen>
           <Pag></Pag>
-          <Button onClick={() => this.toggleMute()}>Mute</Button>
           <Uploadppt roomName={roomN}></Uploadppt>
           <Toolbox></Toolbox>
           <Canvaboard message="pen" roomName={roomN} type="1"></Canvaboard>

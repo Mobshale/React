@@ -1,72 +1,44 @@
+import { useEffect, useRef } from "react";
 import Canvaboard from "../whiteboard/canvaboard";
-import React, { Component } from 'react';
-import "./video.css"
+import "./video.css";
 import { Button } from "antd";
+import {
+  AudioOutlined,
+  AudioMutedOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
 
-class Video extends React.Component {
+function Video(props) {
+  const videoRef = useRef(null);
 
-  constructor(props){
-    super(props)
+  useEffect(() => {
+    const video = videoRef.current;
+    props.childToParent(video);
+  }, [props]);
 
-    
-
-    this.state = {
-        localStream : null
-    }
-   
-  }
-
-  componentDidMount() {
-      this.getLocalStream(); 
-  }
-
-
-  getLocalStream = () => {
-    // const success = (stream) => {
-    //   window.localStream = stream
-    //   this.setState({
-    //     localStream: stream
-    //   })
-      var video = document.querySelector('video');
-      // video.srcObject = this.state.localStream
-      this.props.childToParent(video);
-    // }
-  
-    // const failure = (e) => {
-    //   console.log('getUserMedia Error: ', e)
-    // }
-  
-   
-    // const constraints = {
-    //   audio: true,
-    //   video: true,
-    //   options: {
-    //     mirror: true,
-    //   }
-    // }
-  
-    // navigator.mediaDevices.getUserMedia(constraints)
-    //   .then(success)
-    //   .catch(failure)
-  }
-  
-
-
-  render(){
-  
   return (
-   <div class="video-box">
-     <video autoPlay={true} id='video'  class="video"/>
-
-        {/* <video 
-         class="video" autoPlay muted id='video'>
-        </video>  */}
-     
-   </div>
-
+    <div className="video-box">
+      <video
+        autoPlay={true}
+        id="video"
+        ref={videoRef}
+        className="video"
+        muted={props.muted}
+      />
+      <div className="video-bar">
+        <Button
+          onClick={props.toggleMute}
+          icon={props.muted ? <AudioMutedOutlined /> : <AudioOutlined />}
+        >
+          {/* {props.muted ? "Unmute" : "Mute"} */}
+        </Button>
+        <Button
+          onClick={props.toggleVideo}
+          icon={props.videoOn ? <AudioOutlined /> : <VideoCameraOutlined />}
+        ></Button>
+      </div>
+    </div>
   );
-  }
-  
 }
 
 export default Video;
