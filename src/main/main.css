@@ -285,6 +285,17 @@
   right: 0;
   margin: auto;
 }
+
+.product-hunt {
+  position: absolute;
+  margin-top: 40px;
+  min-width: 370px;
+  z-index: 3;
+  top: 6%;
+  right: 0;
+  right: 0;
+  margin: auto;
+}
 .mobile-prompt {
   position: absolute;
   top: 0;

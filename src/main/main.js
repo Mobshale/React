@@ -185,6 +185,19 @@ class Main extends React.Component {
           </div>
         ) : (
           <div>
+            <div class="product-hunt">
+              <a
+                href="https://www.producthunt.com/posts/flames-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-flames&#0045;3"
+                target="_blank"
+              >
+                <img
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=392391&theme=light"
+                  alt="Flames - Whiteboard&#0032;virtual&#0032;classroom&#0032;for&#0032;teachers&#0032;and&#0032;students | Product Hunt"
+                  style={{ left: "0", top: "0", width: "250", height: "54" }}
+                />
+              </a>
+            </div>
+
             <div class="alert">
               {this.state.success ? (
                 <Alert
