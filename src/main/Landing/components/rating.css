@@ -1,0 +1,18 @@
+.rating-div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+  margin-left: 25px;
+}
+
+@media (max-width: 768px) {
+  /* adjust as needed for your breakpoints */
+  .rating-div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 20px;
+    margin-left: 18vw;
+  }
+}

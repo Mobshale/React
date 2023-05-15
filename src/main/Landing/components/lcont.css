@@ -1,0 +1,128 @@
+.custom-btn {
+  width: 150px;
+  height: 50px;
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px 25px;
+  font-family: "Lato", sans-serif;
+  font-weight: 500;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+.btn-14 {
+  background: rgb(255, 151, 0);
+  border: none;
+  z-index: 1;
+}
+
+.btn-14:after {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 0;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: 5px;
+  background-color: #eaf818;
+  background-image: linear-gradient(315deg, #eaf818 0%, #f6fc9c 74%);
+  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.btn-14:hover {
+  color: #000;
+}
+
+.btn-14:hover:after {
+  top: auto;
+  bottom: 0;
+  height: 100%;
+}
+
+.btn-14:active {
+  top: 2px;
+}
+
+.lcontent-container {
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(to right, #1488cc, #2b32b2);
+  border-radius: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 95vw;
+}
+
+.content-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  max-width: 90vw;
+  height: 80vh;
+}
+
+.text-wrapper {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.heading {
+  font-size: 50px;
+  font-family: "Montserrat";
+  color: #ffffff;
+  width: 550px;
+}
+
+.custom-btn {
+  /* Add your button styles here */
+}
+
+.image {
+  width: 500px;
+  height: 500px;
+}
+@media screen and (max-width: 768px) {
+  .content-wrapper {
+    flex-direction: column-reverse;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .heading {
+    font-size: 30px;
+    width: 100%;
+  }
+
+  .image {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .content-wrapper {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .text-wrapper {
+    text-align: left;
+    margin-right: 20px;
+  }
+
+  .image {
+    width: 600px;
+    height: 600px;
+  }
+}
+
+/* Add more media queries for other screen sizes as needed */
