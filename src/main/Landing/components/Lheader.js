@@ -44,10 +44,18 @@ const LHeader = () => {
 
         <div style={{ alignSelf: "flex-end" }}>
           <Menu mode="horizontal" theme="light">
-            <Menu.Item key="home" icon={<HomeOutlined />}>
+            <Menu.Item
+              key="home"
+              onClick={() => (window.location.href = "/")}
+              icon={<HomeOutlined />}
+            >
               Home
             </Menu.Item>
-            <Menu.Item key="pricing" icon={<DollarOutlined />}>
+            <Menu.Item
+              key="pricing"
+              onClick={() => (window.location.href = "/Pricing")}
+              icon={<DollarOutlined />}
+            >
               Pricing
             </Menu.Item>
             <Menu.Item

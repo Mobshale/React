@@ -65,54 +65,54 @@ function Session(props) {
   };
 
   const startClass = () => {
-    // const instance = new Razorpay({
-    //   key_id: "rzp_live_LYHyKNT0ZiQLF5",
-    //   key_secret: "HHq50WFLFU3ggSr6KAUCEPIu",
-    // });
+    const instance = new Razorpay({
+      key_id: "rzp_live_LYHyKNT0ZiQLF5",
+      key_secret: "HHq50WFLFU3ggSr6KAUCEPIu",
+    });
 
-    // const startDate = new Date();
-    // startDate.setDate(startDate.getDate() + 7);
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() + 7);
 
-    // var date = Math.round(startDate.getTime() / 1000);
-    // console.log(date);
+    var date = Math.round(startDate.getTime() / 1000);
+    console.log(date);
 
-    // instance.subscriptions
-    //   .create({
-    //     plan_id: "plan_LmCI1CTXDlnROT",
-    //     customer_notify: 1,
-    //     quantity: 1,
-    //     total_count: 12,
-    //     start_at: date,
-    //     notes: {
-    //       key1: "value3",
-    //       key2: "value2",
-    //     },
-    //   })
-    //   .then((subscription) => {
-    //     console.log("Subscription created:", subscription);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error creating subscription:", error);
-    //   });
+    instance.subscriptions
+      .create({
+        plan_id: "plan_LmCI1CTXDlnROT",
+        customer_notify: 1,
+        quantity: 1,
+        total_count: 12,
+        start_at: date,
+        notes: {
+          key1: "value3",
+          key2: "value2",
+        },
+      })
+      .then((subscription) => {
+        console.log("Subscription created:", subscription);
+      })
+      .catch((error) => {
+        console.error("Error creating subscription:", error);
+      });
 
-    var sessionName = document.getElementById("sessionName").value;
-    sessionName = sessionName.replace(/\s+/g, "");
+    // var sessionName = document.getElementById("sessionName").value;
+    // sessionName = sessionName.replace(/\s+/g, "");
 
-    if (sessionName) {
-      if (sessionType == 1) {
-        props.history.push(
-          "/guru/one2one/" +
-            sessionName +
-            "/" +
-            user.displayName.trim() +
-            "/cdox/sdoc"
-        );
-      } else {
-        props.history.push(
-          "/guru/" + sessionName + "/" + user.displayName.trim() + "/cdox/sdoc"
-        );
-      }
-    }
+    // if (sessionName) {
+    //   if (sessionType == 1) {
+    //     props.history.push(
+    //       "/guru/one2one/" +
+    //         sessionName +
+    //         "/" +
+    //         user.displayName.trim() +
+    //         "/cdox/sdoc"
+    //     );
+    //   } else {
+    //     props.history.push(
+    //       "/guru/" + sessionName + "/" + user.displayName.trim() + "/cdox/sdoc"
+    //     );
+    //   }
+    // }
   };
 
   const items = [

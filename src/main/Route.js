@@ -15,6 +15,7 @@ import StudentLogin from "./StudentLogin";
 import OnetoOneStudent from "../student/OnetooneStudent";
 import OnetoOneTeacher from "../teacher/OnetooneTeacher";
 import Landingpage from "./Landing/Landingpage";
+import Pricing from "./Landing/Pricing";
 
 function LoginLayout(props) {
   const history = useHistory();
@@ -24,6 +25,8 @@ function LoginLayout(props) {
       <Switch>
         <Route exact path="/Session" component={SessionDetails}></Route>
         <Route exact path="/" component={Landingpage}></Route>
+        <Route exact path="/Pricing" component={Pricing} />
+
         <Route
           exact
           path="/sishya/:roomName/:userName/:cdoc/:sdoc"
