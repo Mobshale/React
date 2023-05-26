@@ -114,6 +114,16 @@
   display: flex;
   justify-content: space-around;
 }
+.alert {
+  position: absolute;
+  margin-top: 30px;
+  min-width: 370px;
+  z-index: 3;
+  top: 3%;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
 
 .pricing-card-free {
   position: relative;

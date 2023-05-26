@@ -57,6 +57,7 @@ function Session(props) {
   const [subscribed, setSubscibed] = useState(false);
   const [classPlan, setClassPlan] = useState(0);
   const [chargable, setChargable] = useState(14.99);
+  const [notify, setNotify] = useState("");
 
   var userRef;
 
@@ -145,6 +146,11 @@ function Session(props) {
     }
 
     try {
+      setNotify("Please wait we are processing");
+      setTimeout(() => {
+        setNotify("");
+      }, 4000);
+
       const response = await axios.post(
         "https://flamesrazrorpay.azurewebsites.net/api/HttpTrigger1?code=Hq7XEiKFvfH6S35JKkYeM3JzVH9HS8UXByu1-68kavupAzFub7ZiaA==",
         {
@@ -330,23 +336,19 @@ function Session(props) {
 
   return (
     <div class="-body">
-      {error && (
-        <Alert
-          message="Error"
-          description={error}
-          type="error"
-          showIcon
-          closable
-          onClose={() => setError("")}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            zIndex: 9999,
-          }}
-        />
-      )}
+      <div class="alert">
+        {notify && <Alert type="success" description={notify}></Alert>}
+        {error && (
+          <Alert
+            message="Error"
+            description={error}
+            type="error"
+            showIcon
+            closable
+            onClose={() => setError("")}
+          />
+        )}
+      </div>
 
       <div className="-auth-wrapper auth-basic px-2">
         <div className="-auth-inner my-2"></div>
