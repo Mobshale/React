@@ -134,14 +134,14 @@ function Session(props) {
     let planeName = "";
     switch (classPlan) {
       case 2:
-        setPlanId("plan_LmCIgz68Bb15vx");
+        setPlanId("plan_LuEqm4rnOJqq2W");
         setChargable(9.99);
-        planeName = "7 days free trial- Later $9.99/Montly";
+        planeName = "7 days free trial- Later ₹999/Montly";
         break;
       case 3:
-        setPlanId("plan_LmCI1CTXDlnROT");
+        setPlanId("plan_LuEpJyqMRz73OV");
         setChargable(14.99);
-        planeName = "7 days free trial- Later $14.99/Montly";
+        planeName = "7 days free trial- Later ₹1499/Montly";
         break;
     }
 
@@ -404,7 +404,7 @@ function Session(props) {
               >
                 <h1>Upto 30</h1>
                 <p>Participants</p>
-                <div>$9.99/Monthly</div>
+                <div>₹999/Monthly</div>
                 {subscribed ? (
                   <div class="price-premium"> Subscribed </div>
                 ) : (
@@ -428,7 +428,7 @@ function Session(props) {
               >
                 <h1>100+</h1>
                 <p>Participants</p>
-                <div>$14.99/Monthly</div>
+                <div>₹1499/Monthly</div>
                 {subscribed ? (
                   <div class="price-premium"> Subscribed </div>
                 ) : (
